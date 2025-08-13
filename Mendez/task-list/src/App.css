@@ -1,0 +1,18 @@
+.container_background {
+  background: #000000;
+  background: linear-gradient(190deg, rgba(0, 0, 0, 1) 0%, rgba(21, 14, 31, 1) 50%, rgba(32, 32, 97, 1) 100%);
+}
+
+.taskItem_container.taskItem_container {
+  background: #082751;
+  background: linear-gradient(218deg, 
+  rgb(43, 1, 92) 0%, 
+  rgb(63, 2, 138) 50%, 
+  rgb(20, 1, 184) 100%);
+  color: azure;
+}
+
+.taskItem_StringCrossedOut {
+  text-decoration: line-through;
+  color: rgba(255, 255, 255, 0.5);
+}
