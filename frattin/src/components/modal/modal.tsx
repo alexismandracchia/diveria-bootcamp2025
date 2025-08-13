@@ -1,4 +1,6 @@
 import { useEffect } from "react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
+
 import "./modal.css";
 
 type ModalProps = {
@@ -24,7 +26,7 @@ export default function Modal({ isOpen, onClose, children }: ModalProps) {
         className="modal-content"
         onClick={e => e.stopPropagation()}
       >
-        <button className="close" onClick={onClose}>&times;</button>
+        <XMarkIcon className="close" onClick={onClose}></XMarkIcon>
         {children}
       </div>
     </div>

@@ -24,44 +24,43 @@ type Task = {
 
 export default function App() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalContent, setModalContent] = useState<"create" | "edit" | "detail" | "delete" | null>(null);
+  const [modalContent, setModalContent] = useState<
+    "create" | "edit" | "detail" | "delete" | null
+  >(null);
 
   const savedTasks = localStorage.getItem("tasks");
-  const [tasks, setTasks] = useState<Task[]>(savedTasks ? JSON.parse(savedTasks) : []);
-  
+  const [tasks, setTasks] = useState<Task[]>(
+    savedTasks ? JSON.parse(savedTasks) : []
+  );
+
   const [selectedTask, setSelectedTask] = useState<Task | null>(null);
-  const [taskToDelete, setTaskToDelete] = useState<Task | null>(null);
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
+  //modals
   const openCreateTaskModal = () => {
     setModalContent("create");
     setIsModalOpen(true);
   };
 
-  const openTaskDetailModal = (taskId: number) => {
-    const task = tasks.find((t) => t.id === taskId);
-    if (task) {
-      setSelectedTask(task);
-      setModalContent("detail");
-      setIsModalOpen(true);
-    }
+  const openEditTaskModal = (task: Task) => {
+    setSelectedTask(task);
+    setModalContent("edit");
+    setIsModalOpen(true);
   };
 
-  const opendeleteModal = (task: Task) => {
-    setTaskToDelete(task);
+  const openDeleteTaskModal = (task: Task) => {
+    setSelectedTask(task);
     setModalContent("delete");
     setIsModalOpen(true);
   };
 
-  const deleteTask = () => {
-    if (taskToDelete) {
-      setTasks((prev) => prev.filter((t) => t.id !== taskToDelete.id));
-      setTaskToDelete(null);
-      closeModal();
-    }
+  const openTaskDetailModal = (task: Task) => {
+    setSelectedTask(task);
+    setModalContent("detail");
+    setIsModalOpen(true);
   };
 
   const closeModal = () => {
@@ -70,24 +69,11 @@ export default function App() {
     setSelectedTask(null);
   };
 
-  const handleCreateTask = (task: Omit<Task, "id">) => {
+  //task management
+  const handleCreateTask = (task: Omit<Task, "id">) => { //recibe el objeto omitiendo el id
     const newTask = { ...task, id: Date.now(), completed: false };
     setTasks((prev) => [...prev, newTask]);
     closeModal();
-  };
-
-  const toggleComplete = (id: number) => {
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? { ...task, completed: !task.completed } : task
-      )
-    );
-  };
-
-  const openEditTaskModal = (task: Task) => {
-    setSelectedTask(task);
-    setModalContent("edit");
-    setIsModalOpen(true);
   };
 
   const handleUpdateTask = (updatedTask: Task) => {
@@ -97,6 +83,23 @@ export default function App() {
     closeModal();
   };
 
+  const handleDeleteTask = () => {
+    if (selectedTask) {
+      setTasks((prev) => prev.filter((t) => t.id !== selectedTask.id));
+      setSelectedTask(null);
+      closeModal();
+    }
+  };
+
+  const handleCompleteTask = (id: number) => {
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
+
+  //dnd
   const handleOnDragEnd = (result: any) => {
     if (!result.destination) return;
 
@@ -127,18 +130,18 @@ export default function App() {
           {modalContent === "detail" && selectedTask && (
             <TaskDetail task={selectedTask} onClose={closeModal} />
           )}
-          {modalContent === "delete" && taskToDelete && (
+          {modalContent === "delete" && selectedTask && (
             <form>
               <h2>Eliminar tarea</h2>
               <p>
                 ¿Estás seguro de que quieres eliminar la tarea:
                 <br />
-                <strong>"{taskToDelete.title}"</strong>?<br />
+                <strong>"{selectedTask.title}"</strong>?<br />
               </p>
               <strong style={{ color: "tomato", alignSelf: "center" }}>
                 Esta acción es permanente y no se puede deshacer.
               </strong>
-              <button onClick={deleteTask}>Eliminar</button>
+              <button onClick={handleDeleteTask}>Eliminar</button>
               <button onClick={closeModal}>Cancelar</button>
             </form>
           )}
@@ -174,7 +177,7 @@ export default function App() {
                         } ${task.completed ? "completed" : ""}`}
                         ref={provided.innerRef}
                         {...provided.draggableProps}
-                        onClick={() => openTaskDetailModal(task.id)}
+                        onClick={() => openTaskDetailModal(task)}
                       >
                         {" "}
                         <div
@@ -200,7 +203,7 @@ export default function App() {
                             className="icon delete-icon"
                             onClick={(e) => {
                               e.stopPropagation();
-                              opendeleteModal(task);
+                              openDeleteTaskModal(task);
                             }}
                           />
                           {task.completed ? (
@@ -208,7 +211,7 @@ export default function App() {
                               className="icon complete-icon"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                toggleComplete(task.id);
+                                handleCompleteTask(task.id);
                               }}
                             />
                           ) : (
@@ -216,7 +219,7 @@ export default function App() {
                               className="icon complete-icon"
                               onClick={(e) => {
                                 e.stopPropagation();
-                                toggleComplete(task.id);
+                                handleCompleteTask(task.id);
                               }}
                             />
                           )}

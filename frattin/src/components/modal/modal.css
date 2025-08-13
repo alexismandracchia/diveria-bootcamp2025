@@ -31,8 +31,15 @@
   right: 10px;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
+  font-weight: bold;
   cursor: pointer;
   height: 35px;
-  width: 50px;
+  width: 35px;
+  color: white;
+  border-radius: 5px;
+  padding: 0.2rem;
+  transition: opacity 0.3s ease;
+}
+.close:hover {
+  opacity: 0.8;
 }

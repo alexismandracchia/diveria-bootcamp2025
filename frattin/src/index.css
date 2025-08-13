@@ -10,7 +10,7 @@
 :root {
   --color-bg: #dddddd;
   --color-container: #e0e0e0;
-  --color-text: #1e1e1e;
+  --color-text: #424242;
   --color-primary: #3c80d3;
   --color-card: #e2e2e2;
   --color-border: #679c12;
@@ -24,7 +24,7 @@
   --color-text: #e0e0e0;
   --color-primary: #5b8bbb;
   --color-card: #363636;
-  --color-border: #ffd622;
+  --color-border: #ffd622af;
   --color-theme-toggle: #cfcece;
 }
 
