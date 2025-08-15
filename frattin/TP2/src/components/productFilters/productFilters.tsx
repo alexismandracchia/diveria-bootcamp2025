@@ -3,8 +3,8 @@ import "./productFilters.css";
 type Filters = {
   title: string;
   categoryId: number | null;
-  price_min: number;
-  price_max: number;
+  price_min: number | null;
+  price_max: number | null;
 };
 
 type Props = {
@@ -53,9 +53,12 @@ export default function ProductFilters({ filters, onChange }: Props) {
           id="PriceMin"
           type="number"
           placeholder="Precio min"
-          value={filters.price_min}
+          value={filters.price_min ?? ""}
           onChange={(e) =>
-            onChange({ ...filters, price_min: Number(e.target.value) })
+            onChange({
+              ...filters,
+              price_min: e.target.value ? Number(e.target.value) : null,
+            })
           }
           min={1}
         />
@@ -67,9 +70,12 @@ export default function ProductFilters({ filters, onChange }: Props) {
           id="PriceMax"
           type="number"
           placeholder="Precio max"
-          value={filters.price_max}
+          value={filters.price_max ?? ""}
           onChange={(e) =>
-            onChange({ ...filters, price_max: Number(e.target.value) })
+            onChange({
+              ...filters,
+              price_max: e.target.value ? Number(e.target.value) : null,
+            })
           }
           min={1}
         />

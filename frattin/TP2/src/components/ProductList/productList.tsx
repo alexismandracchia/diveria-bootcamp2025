@@ -25,8 +25,8 @@ type Product = {
 type Filters = {
   title: string;
   categoryId: number | null;
-  price_min: number;
-  price_max: number;
+  price_min: number | null;
+  price_max: number | null;
 };
 
 export default function ProductList() {
@@ -37,8 +37,8 @@ export default function ProductList() {
   const [filters, setFilters] = useState<Filters>({
     title: "",
     categoryId: null,
-    price_min: 0,
-    price_max: 0,
+    price_min: null,
+    price_max: null,
   });
 
   function SampleNextArrow(props: any) {
@@ -74,6 +74,7 @@ export default function ProductList() {
       />
     );
   }
+
   const settings = {
     dots: true,
     infinite: true,
@@ -84,19 +85,25 @@ export default function ProductList() {
     prevArrow: <SamplePrevArrow />,
   };
 
+  const [debouncedFilters, setDebouncedFilters] = useState(filters);
+  useEffect(() => {
+    const handler = setTimeout(() => setDebouncedFilters(filters), 750);
+    return () => clearTimeout(handler); // limpiar el timeout si filters cambia antes de 500ms
+  }, [filters]);
+
   useEffect(() => {
     const params: any = {};
     if (filters.title) params.title = filters.title;
     if (filters.categoryId) params.categoryId = filters.categoryId;
-    if (filters.price_min) params.price_min = filters.price_min;
-    if (filters.price_max) params.price_max = filters.price_max;
+    params.price_min = filters.price_min != null ? filters.price_min : 1;
+    params.price_max = filters.price_max != null ? filters.price_max : 999999;
 
     api
       .get<Product[]>("/products", { params })
       .then((res) => setProducts(res.data))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
-  }, [filters]);
+  }, [debouncedFilters]);
 
   if (loading) return <p>Searching products...</p>;
 

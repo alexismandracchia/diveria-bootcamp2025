@@ -75,21 +75,25 @@ export default function ProductDetail() {
   };
 
   return (
-    <div className="detail-content">
-      <div className="detail-text">
+    <>
+      <header>
         <h1>{product?.title}</h1>
-        <p>{product?.description}</p>
-        <strong>${product?.price?.toFixed(2)}</strong>
+      </header>
+      <div className="detail-content">
+        <div className="detail-text">
+          <p>{product?.description}</p>
+          <strong>${product?.price?.toFixed(2)}</strong>
+        </div>
+        <div className="slider-container">
+          <Slider {...settings} className="slider">
+            {product?.images?.map((img, i) => (
+              <div key={i}>
+                <img src={img} alt={product.title} />
+              </div>
+            ))}
+          </Slider>
+        </div>
       </div>
-      <div className="slider-container">
-        <Slider {...settings} className="slider">
-          {product?.images?.map((img, i) => (
-            <div key={i}>
-              <img src={img} alt={product.title} />
-            </div>
-          ))}
-        </Slider>
-      </div>
-    </div>
+    </>
   );
 }

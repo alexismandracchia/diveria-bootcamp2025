@@ -5,8 +5,8 @@
   top: 8rem;
   flex-direction: column;
   justify-content: space-between;
-  max-width: 200px;
-  max-height: 300px;
+  width: 200px;
+  height: 300px;
   background-color: var(--color-card);
   padding: 1rem;
   border-radius: 8px;

@@ -8,18 +8,18 @@
 }
 
 :root {
-  --color-bg: #d6d6d6;
+  --color-bg: #cacaca;
   --color-container: #e0e0e0;
   --color-text: #424242;
   --color-primary: #3c80d3;
   --color-card: #d8d8d8;
   --color-border: #679c12;
   --color-close-bg: #f04e4e;
-  --color-theme-toggle: #636363;
+  --color-theme-toggle: #414141;
 }
 
 :root[data-theme="dark"] {
-  --color-bg: rgb(36, 36, 36);
+  --color-bg: rgb(38, 38, 38);
   --color-container: #1e1e1e;
   --color-text: #e0e0e0;
   --color-primary: #5b8bbb;

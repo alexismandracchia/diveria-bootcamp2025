@@ -4,7 +4,7 @@ export default function Home() {
   return (
     <>
       <header>
-        <h1>Welcome to the Home Page</h1>
+        <h1>Welcome to ProductsSearch!</h1>
       </header>
       
       <ProductList />
