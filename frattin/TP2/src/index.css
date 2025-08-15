@@ -30,10 +30,11 @@
 
 html,
 body {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Poppins", sans-serif;
   background-color: var(--color-bg);
   color: var(--color-text);
   min-height: 100vh;
+  line-height: 1;
 }
 
 button {
@@ -78,13 +79,18 @@ textarea {
   min-height: 150px;
 }
 
-
-header{
+header {
   margin: 2rem auto 3rem;
   background-color: var(--color-card);
   width: 70%;
   height: 60px;
-  text-align: center; 
-  line-height: 60px; 
+  text-align: center;
+  line-height: 60px;
   border-radius: 10px;
+}
+
+h3 {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }

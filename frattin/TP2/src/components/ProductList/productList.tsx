@@ -8,6 +8,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import ProductFilters from "../productFilters/productFilters";
+import SkeletonProducts from "../feedback/Skeletonproducts";
+import EmptyProducts from "../feedback/EmptyProducts";
 
 type Product = {
   id: number;
@@ -105,8 +107,6 @@ export default function ProductList() {
       .finally(() => setLoading(false));
   }, [debouncedFilters]);
 
-  if (loading) return <p>Searching products...</p>;
-
   function handdleClick(id: number) {
     navigate(`/products/${id}`);
   }
@@ -115,27 +115,33 @@ export default function ProductList() {
     <div className="app-content">
       <ProductFilters filters={filters} onChange={setFilters} />
 
-      <div className="products-container">
-        {products.map((product) => (
-          <div className="product-card" key={product.id}>
-            <Slider {...settings}>
-              {product.images.map((img, i) => (
-                <div key={i}>
-                  <img
-                    src={img}
-                    alt={product.title}
-                    onClick={() => handdleClick(product.id)}
-                  />
-                </div>
-              ))}
-            </Slider>
-            <div className="text-content">
-              <h3>{product.title}</h3>
-              <strong>${product.price.toFixed(2)}</strong>
+      {loading ? (
+        <SkeletonProducts />
+      ) : !products.length ? (
+        <EmptyProducts />
+      ) : (
+        <div className="products-container">
+          {products.map((product) => (
+            <div className="product-card" key={product.id}>
+              <Slider {...settings}>
+                {product.images.map((img, i) => (
+                  <div key={i}>
+                    <img
+                      src={img}
+                      alt={product.title}
+                      onClick={() => handdleClick(product.id)}
+                    />
+                  </div>
+                ))}
+              </Slider>
+              <div className="text-content">
+                <h3>{product.title}</h3>
+                <strong>${product.price.toFixed(2)}</strong>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
