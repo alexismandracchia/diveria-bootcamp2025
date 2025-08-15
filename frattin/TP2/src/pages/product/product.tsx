@@ -1,4 +1,3 @@
-import { useState } from "react";
 import ProductDetail from "../../components/productDetail/productDetail";
 
 export default function Product() {

@@ -1,10 +1,13 @@
 import { useEffect, useState } from "react";
 import { api } from "../../utils/api";
 import { useNavigate } from "react-router-dom";
-import "./productList.css"
+import "./productList.css";
+
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 
 import ProductFilters from "../productFilters/productFilters";
-
 
 type Product = {
   id: number;
@@ -38,6 +41,49 @@ export default function ProductList() {
     price_max: 0,
   });
 
+  function SampleNextArrow(props: any) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: "block",
+          marginRight: "1.5rem",
+          transform: "scale(2)",
+          zIndex: "1000",
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+
+  function SamplePrevArrow(props: any) {
+    const { className, style, onClick } = props;
+    return (
+      <div
+        className={className}
+        style={{
+          ...style,
+          display: "block",
+          marginLeft: "1.5rem",
+          transform: "scale(2)",
+          zIndex: "1000",
+        }}
+        onClick={onClick}
+      />
+    );
+  }
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 300,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    nextArrow: <SampleNextArrow />,
+    prevArrow: <SamplePrevArrow />,
+  };
+
   useEffect(() => {
     const params: any = {};
     if (filters.title) params.title = filters.title;
@@ -61,16 +107,25 @@ export default function ProductList() {
   return (
     <div className="app-content">
       <ProductFilters filters={filters} onChange={setFilters} />
-      
+
       <div className="products-container">
         {products.map((product) => (
-          <div key={product.id} onClick={() => handdleClick(product.id)}>
-            <h3>{product.title}</h3>
-            <p>{product.category.name}</p>
-            {product?.images?.map((img, i) => (
-              <img key={i} src={img} alt={product.title} width={100} />
-            ))}{" "}
-            <strong>${product.price.toFixed(2)}</strong>
+          <div className="product-card" key={product.id}>
+            <Slider {...settings}>
+              {product.images.map((img, i) => (
+                <div key={i}>
+                  <img
+                    src={img}
+                    alt={product.title}
+                    onClick={() => handdleClick(product.id)}
+                  />
+                </div>
+              ))}
+            </Slider>
+            <div className="text-content">
+              <h3>{product.title}</h3>
+              <strong>${product.price.toFixed(2)}</strong>
+            </div>
           </div>
         ))}
       </div>
