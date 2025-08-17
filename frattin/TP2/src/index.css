@@ -80,6 +80,7 @@ textarea {
 }
 
 header {
+  position: relative;
   margin: 2rem auto 3rem;
   background-color: var(--color-card);
   width: 70%;

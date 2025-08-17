@@ -7,6 +7,8 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
+import BackSpace from "../productDetail/BackSpace";
+
 type Product = {
   id: number;
   title: string;
@@ -77,6 +79,7 @@ export default function ProductDetail() {
   return (
     <>
       <header>
+        <BackSpace />
         <h1>{product?.title}</h1>
       </header>
       <div className="detail-content">

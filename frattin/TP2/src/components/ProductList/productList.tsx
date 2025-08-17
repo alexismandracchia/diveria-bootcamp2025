@@ -8,7 +8,7 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 import ProductFilters from "../productFilters/productFilters";
-import SkeletonProducts from "../feedback/Skeletonproducts";
+import SkeletonProducts from "../feedback/SkeletonProducts";
 import EmptyProducts from "../feedback/EmptyProducts";
 
 type Product = {

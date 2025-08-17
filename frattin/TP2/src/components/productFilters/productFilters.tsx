@@ -1,3 +1,5 @@
+import { useEffect, useState } from "react";
+import { api } from "../../utils/api";
 import "./productFilters.css";
 
 type Filters = {
@@ -12,7 +14,18 @@ type Props = {
   onChange: (filters: Filters) => void;
 };
 
+type Category = {
+  id: number;
+  name: string;
+};
+
 export default function ProductFilters({ filters, onChange }: Props) {
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  useEffect(() => {
+    api.get<Category[]>("/categories").then((res) => setCategories(res.data));
+  }, []);
+
   return (
     <div className="filters-container">
       <div className="label-group">
@@ -27,7 +40,7 @@ export default function ProductFilters({ filters, onChange }: Props) {
       </div>
 
       <div className="label-group">
-        <label htmlFor="Filters">Filters</label>
+        <label htmlFor="Filters">Categories</label>
         <select
           id="Filters"
           value={filters.categoryId ?? ""}
@@ -39,11 +52,11 @@ export default function ProductFilters({ filters, onChange }: Props) {
           }
         >
           <option value="">All categories</option>
-          <option value="1">Clothes</option>
-          <option value="2">Electronics</option>
-          <option value="3">Furniture</option>
-          <option value="4">Shoes</option>
-          <option value="5">Others</option>
+          {categories.map((category) => (
+            <option key={category.id} value={category.id}>
+              {category.name}
+            </option>
+          ))}
         </select>
       </div>
 
