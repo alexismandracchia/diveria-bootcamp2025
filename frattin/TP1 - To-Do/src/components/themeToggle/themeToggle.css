@@ -1,0 +1,13 @@
+.theme-toggle {
+  display: flex;
+  position: relative;
+  align-items: center;
+  justify-content: center;
+
+  width: 3rem;
+  height: 3rem;
+  border-radius: 100%;
+
+  background-color: var(--color-theme-toggle);
+  transform: scale(1);
+}

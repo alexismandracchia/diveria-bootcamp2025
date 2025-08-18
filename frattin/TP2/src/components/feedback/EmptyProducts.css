@@ -1,0 +1,21 @@
+/* EmptyProducts.css */
+.empty-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 60vh;  width: 70%;
+  text-align: center;
+
+
+}
+
+.empty-message h2 {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+  color: var(--color-text);
+}
+
+.empty-message p {
+  font-size: 1.2rem;
+  color: #888;
+}
