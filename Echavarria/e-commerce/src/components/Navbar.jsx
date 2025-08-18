@@ -1,4 +1,4 @@
-import { AppBar, Toolbar, Typography, Box } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
@@ -10,6 +10,42 @@ const Navbar = () => {
                         🛍️24hsShop
                     </Link>
                 </Typography>
+                {/* <IconButton 
+                    component={Link} 
+                    to="/"
+                    target="_blank"
+                    sx={{ filter:'invert(1)' }}
+                >
+                    <img 
+                        src={FacebookIcon} 
+                        alt="Facebook" 
+                        style={{ width: '24px', height: '24px' }} 
+                    />
+                </IconButton> */}
+                {/* <IconButton 
+                    component={Link} 
+                    to="/"
+                    target="_blank"
+                    sx={{ filter:'invert(1)' }}
+                >
+                    <img 
+                        src={InstagramIcon} 
+                        alt="Instagram" 
+                        style={{ width: '24px', height: '24px' }} 
+                    />
+                </IconButton>
+                <IconButton 
+                    component={Link} 
+                    to="/"
+                    target="_blank"
+                    sx={{ filter:'invert(1)' }}
+                >
+                    <img 
+                        src={WhatsAppIcon} 
+                        alt="Whatsapp" 
+                        style={{ width: '24px', height: '24px' }} 
+                    />
+                </IconButton> */}
             </Toolbar>
         </AppBar>
     );

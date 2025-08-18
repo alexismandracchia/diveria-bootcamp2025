@@ -22,17 +22,37 @@ apiUrl.interceptors.response.use(
 );
 
 const ProductServices = {
-      /**
-   * Obtiene todos los productos con opción de filtrado
-   * @param {Object} params - Parámetros de búsqueda
-   * @param {string} params.title - Título a buscar
-   * @param {number} params.price_min - Precio mínimo
-   * @param {number} params.price_max - Precio máximo
-   * @param {number} params.categoryId - ID de categoría
-   * @param {number} params.offset - Paginación offset
-   * @param {number} params.limit - Límite de resultados
-   * @returns {Promise<Array>} Lista de productos
-   */
+
+    getProductById: async (id) => {
+        try {
+        // Validación básica del ID
+            if (!id || isNaN(Number(id))) {
+            throw new Error('ID de producto no válido');
+        }
+
+        const response = await apiUrl.get(`/products/${id}`);
+        
+        // Transformación de datos para asegurar consistencia
+        const productData = response.data;
+        
+        return {
+            id: productData.id,
+            title: productData.title || 'Sin título',
+            price: productData.price || 0,
+            description: productData.description || 'Sin descripción disponible',
+            images: Array.isArray(productData.images) 
+            ? productData.images.filter(img => typeof img === 'string')
+            : [],
+            category: productData.category || { id: 0, name: 'Sin categoría', image: '' },
+            rating: productData.rating || { rate: 4, count: 4 },
+            creationAt: productData.creationAt,
+            updatedAt: productData.updatedAt
+        };
+        } catch (error) {
+            console.error(`Error al obtener producto con ID ${id}:`, error);
+            throw error;
+        }
+    },
 
     getAllProducts: async({ title, price_min, price_max, categoryId, offset = 0, limit = 12 } = {}) => {
         const params = {
@@ -72,16 +92,11 @@ const ProductServices = {
                 total: total
             };
         }catch (error) {
-                console.error('Error fetching paginated products:', error);
-                throw error;
-            }
-        },
+            console.error('Error fetching de productos paginados:', error);
+            throw error;
+        }
+    },
 
-    /**
-   * Busca productos por término de búsqueda
-   * @param {string} searchTerm - Término de búsqueda
-   * @returns {Promise<Array>} Productos filtrados
-   */
 
     serchProducts: async (searchTerm) => {
         try {
@@ -94,16 +109,12 @@ const ProductServices = {
                 (product.category?.name && product.category.name.toLowerCase().includes(searchTerm.toLowerCase()))
             );
         } catch (error) {
-            console.error('Error al buscar los products: ', error);
+            console.error('Error al buscar los productos: ', error);
         }
     },
 };
 
 const CategoryService = {
-     /**
-   * Obtiene todas las categorías
-   * @returns {Promise<Array>} Lista de categorías
-   */
 
     getAllCategories : async () => {
         try {

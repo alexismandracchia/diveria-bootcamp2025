@@ -59,16 +59,17 @@ const Home = () => {
 
     return(
         <Container maxWidth="xl" sx={{ mt:4 }}>
-            <Box sx={{ textAlign: 'center', mb:4 }}>
-                <Typography variant="h3" gutterBottom>
-                    Biennvenido
-                </Typography>
-                <Typography variant="subtitle1">
-                    Encuentra el producto que deseas
-                </Typography>
-            </Box>
-
-            <Box maxWidth="lg" component="form" onSubmit={handleSearch} sx={{ display: 'flex',margin:'auto', gap:2 }}>
+            <Box maxWidth="lg" component="form" onSubmit={handleSearch} 
+                sx={{   
+                    display: 'flex',
+                    margin:'auto', 
+                    gap: 2, 
+                    mb: 4,
+                    p: 3,
+                    bgcolor: 'background.paper',
+                    borderRadius: 2,
+                    boxShadow: 1
+                }}>
                 <TextField 
                     fullWidth
                     variant="outlined"
@@ -84,7 +85,7 @@ const Home = () => {
                     sx={{ px:4 }}>
                     Buscar
                 </Button>
-            </Box>
+            </Box>  
 
             {/* -------------------------------------------------- */}
 

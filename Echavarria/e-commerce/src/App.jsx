@@ -4,10 +4,11 @@ import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import SearchResults from './pages/SearchResult';
 import ProductDetail from './pages/ProductDetail';
+import Footer from './components/Footer';
 
-const theme = createTheme ({
-  palette:{
-    primary:{
+const theme = createTheme({
+  palette: {
+    primary: {
       main: '#1976d2',
     },
     secondary: {
@@ -24,10 +25,11 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
-          <Route path="/" element={<Home/> } />
-          <Route path="/items" element={<SearchResults/> } />
-          <Route path="/items/:id" element={<ProductDetail/> } />
+          <Route path="/" element={<Home />} />
+          <Route path="/items" element={<SearchResults />} />
+          <Route path="/items/:id" element={<ProductDetail />} />
         </Routes>
+        <Footer />
       </Router>
     </ThemeProvider>
   );
