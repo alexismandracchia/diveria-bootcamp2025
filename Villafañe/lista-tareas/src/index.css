@@ -1,0 +1,173 @@
+
+:root {
+
+  --md-sys-color-surface: #0f1216;     /* base fondo */
+  --md-sys-color-surface-variant: #1a1f27;
+  --md-sys-color-on-surface: #e6e8ec;
+  --md-sys-color-outline: #334155;     /* bordes */
+  --md-sys-elevation-1: 0 10px 30px rgba(0,0,0,.35);
+
+  --md-sys-color-primary: #7c69ee;     
+  --md-sys-color-on-primary: #0b0920;
+
+  /* Estados */
+  --md-sys-color-error: #ef5350;
+  --md-sys-color-success: #10b981;
+  --md-sys-color-info: #3b82f6;
+
+  /* Tipografía */
+  --md-font: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
+}
+
+/* ========= Paleta de prioridades =========*/
+:root {
+  --prio-1: #ef4444;  /* Red 500 */
+  --prio-2: #f59e0b;  /* Amber 500 */
+  --prio-3: #3b82f6;  /* Blue 500 */
+  --prio-4: #9aa3af;  /* Gray 400 */
+}
+
+* { box-sizing: border-box; }
+html, body, #root { height: 100%; }
+body {
+  margin: 0;
+  font-family: var(--md-font);
+  color: var(--md-sys-color-on-surface);
+  background:
+    radial-gradient(1200px 600px at 20% -10%, #1b2430 0%, var(--md-sys-color-surface) 40%)
+    , var(--md-sys-color-surface);
+}
+
+/* ======== Layout ======== */
+.app { max-width: 960px; margin: 32px auto; padding: 0 16px; }
+.app__header { margin-bottom: 16px; }
+.title { margin: 0 0 6px; font-size: 28px; letter-spacing: .2px; }
+.subtitle { margin: 0; opacity: .8; }
+
+/* ======== Card ======== */
+.card {
+  background: linear-gradient(180deg, rgba(255,255,255,.03), rgba(255,255,255,.015));
+  border: 1px solid var(--md-sys-color-outline);
+  border-radius: 16px;
+  padding: 16px;
+  margin: 16px 0;
+  box-shadow: var(--md-sys-elevation-1);
+}
+.card__title { margin: 0 0 12px; font-size: 18px; color: #cfd5ff; }
+
+/* ======== Form ======== */
+.form { display: grid; gap: 12px; }
+.form__row { display: grid; gap: 12px; grid-template-columns: 1fr 240px; }
+.form__control { display: grid; gap: 6px; }
+.label { font-size: 12px; opacity: .8; }
+.input {
+  width: 100%; padding: 10px 12px;
+  background: var(--md-sys-color-surface-variant);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface);
+  border-radius: 12px;
+}
+.input:focus { outline: 2px solid #475569; }
+.input--textarea { resize: vertical; min-height: 90px; }
+.error { color: var(--md-sys-color-error); font-size: 12px; margin: 2px 0 0; }
+
+.form__actions { display: flex; justify-content: flex-end; gap: 8px; }
+.btn {
+  padding: 10px 14px; border-radius: 12px;
+  border: 1px solid var(--md-sys-color-outline);
+  background: linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.01));
+  color: var(--md-sys-color-on-surface); cursor: pointer;
+  transition: transform .05s ease, filter .15s ease;
+}
+.btn:hover { filter: brightness(1.1); }
+.btn:active { transform: translateY(1px); }
+.btn--danger { border-color: rgba(239,68,68,.35); color: #fecaca; }
+.btn--ghost { background: transparent; }
+
+/* ======== Prioridad ======== */
+.prio { display: flex; gap: 8px; flex-wrap: wrap; }
+.chip {
+  --chip-color: var(--prio-4);
+  display: inline-flex; align-items: center; gap: 8px;
+  border-radius: 999px; padding: 6px 10px;
+  border: 1px solid var(--md-sys-color-outline);
+  background: rgba(255,255,255,.03);
+  user-select: none; cursor: pointer;
+  transition: filter .2s;
+}
+.chip:hover { filter: brightness(1.1); }
+.chip input { display: none; }
+.chip.prio-1 { --chip-color: var(--prio-1); }
+.chip.prio-2 { --chip-color: var(--prio-2); }
+.chip.prio-3 { --chip-color: var(--prio-3); }
+.chip.prio-4 { --chip-color: var(--prio-4); }
+.chip span::before {
+  content: ""; display: inline-block; width: 10px; height: 10px; border-radius: 999px;
+  background: var(--chip-color); box-shadow: 0 0 0 2px rgba(255,255,255,.06) inset;
+  margin-right: 2px;
+}
+
+/* ======== Lista & Item ======== */
+.empty { opacity: .75; margin: 8px 0; }
+.list { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
+
+.item {
+  display: grid; grid-template-columns: auto 1fr auto; gap: 12px; align-items: start;
+  padding: 12px; border: 1px solid var(--md-sys-color-outline);
+  border-radius: 14px; background: var(--md-sys-color-surface-variant);
+}
+.item__main { display: grid; gap: 6px; }
+.item__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.item__name { font-weight: 600; }
+.item__desc { opacity: .85; margin: 0; }
+
+.item--done .item__name { text-decoration: line-through; opacity: .65; }
+.item--done { opacity: .9; }
+
+/* ======== Checkbox circular estilo Todoist ======== */
+.check {
+  --ring: transparent;
+  width: 22px; height: 22px; border-radius: 999px; flex: 0 0 auto;
+  border: 2px solid var(--prio-4);
+  background: transparent; position: relative; cursor: pointer;
+  transition: transform .05s ease, border-color .2s;
+  outline: none;
+}
+.check:focus-visible { box-shadow: 0 0 0 3px var(--ring); }
+.item.prio-1 .check { border-color: var(--prio-1); --ring: color-mix(in oklab, var(--prio-1) 30%, transparent); }
+.item.prio-2 .check { border-color: var(--prio-2); --ring: color-mix(in oklab, var(--prio-2) 30%, transparent); }
+.item.prio-3 .check { border-color: var(--prio-3); --ring: color-mix(in oklab, var(--prio-3) 30%, transparent); }
+.item.prio-4 .check { border-color: var(--prio-4); --ring: color-mix(in oklab, var(--prio-4) 30%, transparent); }
+
+.item--done .check {
+  border-color: var(--md-sys-color-success);
+  background: radial-gradient(circle at 50% 50%, var(--md-sys-color-success) 0 50%, transparent 55%);
+}
+.item--done .check::after {
+  content: "✓";
+  position: absolute; inset: 0;
+  display: grid; place-items: center; font-size: 14px; color: #052e2b; font-weight: 900;
+}
+
+/* ======== Badges ======== */
+.badges { display: flex; gap: 8px; flex-wrap: wrap; }
+.badge {
+  display: inline-block; padding: 4px 8px; font-size: 12px; border-radius: 999px;
+  border: 1px solid var(--md-sys-color-outline);
+  background: rgba(255,255,255,.04); color: var(--md-sys-color-on-surface);
+}
+.badge--success { border-color: color-mix(in oklab, var(--md-sys-color-success) 35%, transparent); color: #bbf7d0; }
+.badge--danger  { border-color: color-mix(in oklab, var(--md-sys-color-error) 35%, transparent); color: #fecaca; }
+.badge--info    { border-color: color-mix(in oklab, var(--md-sys-color-info) 35%, transparent); color: #bfdbfe; }
+
+/* ======== Botonera item ======== */
+.item__actions { display: flex; gap: 8px; }
+.btn--ghost { color: #e5e7eb; }
+.btn--danger { border-color: rgba(239,68,68,.35); color: #fecaca; }
+
+/* ======== Responsive ======== */
+@media (max-width: 700px) {
+  .form__row { grid-template-columns: 1fr; }
+  .item { grid-template-columns: auto 1fr; }
+  .item__actions { grid-column: 1 / -1; }
+}
