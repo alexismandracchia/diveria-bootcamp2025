@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import axios from "axios";
 import { useState } from "react";
 
@@ -24,46 +24,54 @@ export default function LoginForm() {
       setEmail("");
       setPassword("");
     } catch (err: any) {
-      setError(err.response?.data?.message || err.message || "Login failed");
+      setError(
+        err.response?.data?.message || "Invalid credentials" || err.message
+      );
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="max-w-md mx-auto bg-white dark:bg-gray-900 p-6 rounded-lg shadow-md flex flex-col gap-4"
-    >
-      <h2 className="text-2xl font-bold text-center">Login</h2>
-
-      {error && <p className="text-red-500 text-sm">{error}</p>}
-
-      <input
-        type="text"
-        placeholder="Username"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      />
-
-      <input
-        type="password"
-        placeholder="Password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        required
-      />
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="bg-blue-500 text-white p-2 rounded hover:bg-blue-600 transition disabled:opacity-50"
+    <>
+      <form
+        onSubmit={handleSubmit}
+        className="max-w-md mx-auto p-6 rounded-lg shadow-md flex flex-col gap-4"
       >
-        {loading ? "Logging in..." : "Login"}
-      </button>
-    </form>
+        <h2 className="text-2xl font-bold text-center">Login</h2>
+
+        <input
+          type="text"
+          placeholder="Username"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+
+        <input
+          type="password"
+          placeholder="Password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
+          required
+        />
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="bg-blue-500 p-2 rounded flex items-center justify-center gap-2 hover:bg-blue-600 transition disabled:opacity-50"
+        >
+          {loading && (
+            <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+          )}
+          {loading ? "Logging in..." : "Login"}
+        </button>
+      </form>{" "}
+      <div className="h-5 w-full flex justify-center items-center -mt-5">
+        {error && <p className="text-red-500 text-sm">{error}</p>}
+      </div>
+    </>
   );
 }

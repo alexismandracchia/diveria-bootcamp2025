@@ -17,6 +17,8 @@ export type AppState = {
   items: Item[];
   isAuthenticated: boolean;
   user: User | null;
+  loading: boolean;
+  error: string | null;
   handleLogin: (userData: User) => void;
   handleLogout: () => void;
   getItems: () => Promise<void>;

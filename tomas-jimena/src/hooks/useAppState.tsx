@@ -1,78 +1,101 @@
-import { Item, User } from "@/types/app.types";
 import { useState } from "react";
+import axios from "axios";
+import { Item, User, AppState } from "@/types/app.types";
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export const useAppState = () => {
+export const useAppState = (): AppState => {
   const [items, setItems] = useState<Item[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const handleLogin = (userData: User | null) => {
+    if (!userData) return;
     setIsAuthenticated(true);
     setUser(userData);
+    localStorage.setItem("user", JSON.stringify(userData)); // persistencia
   };
 
   const handleLogout = () => {
     setIsAuthenticated(false);
     setUser(null);
     setItems([]);
+    localStorage.removeItem("user");
   };
 
   const getItems = async () => {
-    const response = await fetch(`${API_URL}/products`);
-    if (!response.ok) throw new Error("Error al obtener productos");
-    const data: Item[] = await response.json();
-    setItems(data);
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await axios.get<Item[]>(`${API_URL}/products`);
+      setItems(data);
+    } catch (err: any) {
+      setError(err.message || "Error al obtener productos");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const addItem = async (item: Item) => {
-    const response = await fetch(`${API_URL}/products`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(item)
-    });
-    if (!response.ok) throw new Error("Error al agregar producto");
-    const newItem: Item = await response.json();
-    setItems((prevItems) => [...prevItems, newItem]);
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await axios.post<Item>(`${API_URL}/products`, item, {
+        headers: { "Content-Type": "application/json" },
+      });
+      setItems((prev) => [...prev, data]);
+    } catch (err: any) {
+      setError(err.message || "Error al agregar producto");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const updateItem = async (item: Item) => {
-    const response = await fetch(`${API_URL}/products/${item.id}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(item)
-    });
-    if (!response.ok) throw new Error("Error al actualizar producto");
-    const updatedItem: Item = await response.json();
-    setItems((prevItems) =>
-      prevItems.map((prevItem) =>
-        prevItem.id === updatedItem.id ? updatedItem : prevItem
-      )
-    );
+    setLoading(true);
+    setError(null);
+    try {
+      const { data } = await axios.put<Item>(
+        `${API_URL}/products/${item.id}`,
+        item,
+        { headers: { "Content-Type": "application/json" } }
+      );
+      setItems((prev) =>
+        prev.map((i) => (i.id === data.id ? data : i))
+      );
+    } catch (err: any) {
+      setError(err.message || "Error al actualizar producto");
+    } finally {
+      setLoading(false);
+    }
   };
 
   const deleteItem = async (id: number) => {
-    const response = await fetch(`${API_URL}/products/${id}`, {
-      method: "DELETE"
-    });
-    if (!response.ok) throw new Error("Error al eliminar producto");
-    setItems((prevItems) => prevItems.filter((item) => item.id !== id));
-    console.log("Producto eliminado:", id);
+    setLoading(true);
+    setError(null);
+    try {
+      await axios.delete(`${API_URL}/products/${id}`);
+      setItems((prev) => prev.filter((i) => i.id !== id));
+    } catch (err: any) {
+      setError(err.message || "Error al eliminar producto");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return {
     items,
     isAuthenticated,
     user,
+    loading,
+    error,
     handleLogin,
     handleLogout,
     getItems,
     addItem,
     updateItem,
-    deleteItem
+    deleteItem,
   };
 };
