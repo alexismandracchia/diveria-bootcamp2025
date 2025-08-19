@@ -1,0 +1,70 @@
+.taskItem {
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #eee;
+  text-align: start;
+}
+
+.taskItem h3 {
+  margin: 0;
+  font-size: 1.2rem;
+}
+
+.taskItem p {
+  margin: 0;
+  margin-bottom: 0.5rem;
+}
+
+.taskItem-title{
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.taskItem-title .completeButton {
+  background-color: transparent;
+  font-size: x-large;
+  padding: 0rem;
+  color: rgb(255, 255, 255);
+  transition: transform 0.3s ease, color 0.3s ease; 
+}
+
+.taskItem-title .completeButton:hover{
+  transform: rotate(20deg) scale(1.1);
+  color: #4caf50;
+  cursor: pointer;
+}
+
+.taskItem .button-container button {
+  margin-right: 0.5rem;
+  padding: 0.5rem;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform 0.3s ease-in-out; 
+}
+
+.taskItem .button-container button:hover {
+  transform: scale(1.1);
+}
+
+.taskItem .deleteButton {
+  border: solid 1px #ff4d4d71;
+  color: white;
+}
+
+.taskItem .editButton {
+  border: solid 1px #ffa50071;
+  color: white;
+}
+
+.taskItem.completed {
+  text-decoration: line-through;
+  color: #99999977;
+}
+
+.taskItem.completed .completeButton{
+  color: #75f37975;
+}
+
+.button-container {
+  justify-self: flex-end;
+}
