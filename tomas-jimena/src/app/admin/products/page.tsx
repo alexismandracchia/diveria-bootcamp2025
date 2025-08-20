@@ -21,10 +21,10 @@ export default function AdminProducts() {
 
       <section className="w-full max-w-md">
 <div>
-  <div className="flex gap-4 mb-4">
-    <button onClick={() => setActiveTab("create")}>Crear</button>
-    <button onClick={() => setActiveTab("edit")}>Editar</button>
-    <button onClick={() => setActiveTab("delete")}>Borrar</button>
+  <div className="flex gap-1">
+    <button onClick={() => setActiveTab("create")} className={`cursor-pointer px-4 py-2  rounded-xl rounded-b-none ${activeTab === "create" ? "bg-gray-500" : "bg-gray-700"}`}>Crear</button>
+    <button onClick={() => setActiveTab("edit")} className={`cursor-pointer px-4 py-2  rounded-xl rounded-b-none ${activeTab === "edit" ? "bg-gray-500" : "bg-gray-700"}`}>Editar</button>
+    <button onClick={() => setActiveTab("delete")} className={`cursor-pointer px-4 py-2  rounded-xl rounded-b-none ${activeTab === "delete" ? "bg-gray-500" : "bg-gray-700"}`}>Borrar</button>
   </div>
 
   <div className="tab-content">
