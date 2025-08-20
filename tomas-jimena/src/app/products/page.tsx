@@ -1,33 +1,14 @@
 "use client";
 import { useEffect, useState } from "react";
-import axios from "axios";
+import { useAppContext } from "@/context/AppContext";
 
-interface Product {
-  id: number;
-  title: string;
-  price: number;
-  description: string;
-  image: string;
-}
 
 export default function Products() {
-  const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { items, loading, error, getItems } = useAppContext();
+
 
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const { data } = await axios.get<Product[]>("https://fakestoreapi.com/products");
-        setProducts(data);
-      } catch (err: any) {
-        setError("Failed to fetch products");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchProducts();
+    getItems();
   }, []);
 
   return (
@@ -38,9 +19,9 @@ export default function Products() {
       </section>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {loading && <p>Loadong products...</p>}
+        {loading && <p>Loading products...</p>}
         {error && <p className="text-red-500">{error}</p>}
-        {!loading && !error && products.map(product => (
+        {!loading && !error && items.map(product => (
           <div key={product.id} className="border rounded p-4 flex flex-col items-center">
             <img src={product.image} alt={product.title} className="w-32 h-32 object-contain mb-4" />
             <h2 className="font-semibold text-lg text-center">{product.title}</h2>
