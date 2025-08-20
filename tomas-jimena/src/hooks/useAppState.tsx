@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 import { Item, User, AppState } from "@/types/app.types";
 
@@ -11,11 +11,51 @@ export const useAppState = (): AppState => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = (userData: User | null) => {
-    if (!userData) return;
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    const storedToken = localStorage.getItem("token");
+
+    if (storedUser && storedToken) {
+      setUser(JSON.parse(storedUser));
+      setIsAuthenticated(true);
+    }
+  }, []);
+
+  const handleLogin = (userData: User, token: string) => {
     setIsAuthenticated(true);
     setUser(userData);
-    localStorage.setItem("user", JSON.stringify(userData)); // persistencia
+    localStorage.setItem("user", JSON.stringify(userData));
+    localStorage.setItem("token", token);
+  };
+
+  const login = async (
+    username: string,
+    password: string
+  ): Promise<boolean> => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const { data } = await axios.post(`${API_URL}/auth/login`, {
+        username,
+        password,
+      });
+
+      const userData: User = {
+        id: 1,
+        name: username,
+        password,
+      };
+
+      handleLogin(userData, data.token);
+      return true;
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Invalid credentials");
+      return false;
+    } finally {
+      setLoading(false);
+      
+    }
   };
 
   const handleLogout = () => {
@@ -62,9 +102,7 @@ export const useAppState = (): AppState => {
         item,
         { headers: { "Content-Type": "application/json" } }
       );
-      setItems((prev) =>
-        prev.map((i) => (i.id === data.id ? data : i))
-      );
+      setItems((prev) => prev.map((i) => (i.id === data.id ? data : i)));
     } catch (err: any) {
       setError(err.message || "Error al actualizar producto");
     } finally {
@@ -97,5 +135,6 @@ export const useAppState = (): AppState => {
     addItem,
     updateItem,
     deleteItem,
+    login,
   };
 };

@@ -19,10 +19,12 @@ export type AppState = {
   user: User | null;
   loading: boolean;
   error: string | null;
-  handleLogin: (userData: User) => void;
+  handleLogin: (userData: User, token: string) => void;
   handleLogout: () => void;
   getItems: () => Promise<void>;
   addItem: (item: Item) => Promise<void>;
   updateItem: (item: Item) => Promise<void>;
   deleteItem: (id: number) => Promise<void>;
+  login: (username: string, password: string) => Promise<boolean>;
+
 };

@@ -1,35 +1,16 @@
 "use client";
-import axios from "axios";
 import { useState } from "react";
+import { useAppContext } from "@/context/AppContext"; // <- suponiendo que envolviste tu App con un context
 
 export default function LoginForm() {
-  const [email, setEmail] = useState("");
+  const { login, loading, error } = useAppContext();
+
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      const { data } = await axios.post("https://fakestoreapi.com/auth/login", {
-        username: email,
-        password,
-      });
-
-      localStorage.setItem("token", data.token);
-      alert("Login successful! Token stored.");
-      setEmail("");
-      setPassword("");
-    } catch (err: any) {
-      setError(
-        err.response?.data?.message || "Invalid credentials" || err.message
-      );
-    } finally {
-      setLoading(false);
-    }
+    await login(username, password);
   };
 
   return (
@@ -43,8 +24,8 @@ export default function LoginForm() {
         <input
           type="text"
           placeholder="Username"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           className="p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
           required
         />

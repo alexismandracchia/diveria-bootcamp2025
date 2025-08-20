@@ -2,8 +2,8 @@
 
 import { useState } from "react";
 
-import "./globals.css";
-import Header from "@/components/navbar/Header";
+
+import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
 import ThemeToggle from "@/components/theme-toggle/ThemeToggle";
 
@@ -17,6 +17,8 @@ const poppins = Poppins({
   variable: "--font-poppins",
 });
 
+import "./globals.css";
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
@@ -26,7 +28,7 @@ export default function RootLayout({
         className={`${poppins.variable} font-sans flex flex-col min-h-screen`}
       >
         <AppProvider>
-          <Header />
+          <Navbar />
           {/* <ThemeToggle /> */}
           {children}
           <Footer />

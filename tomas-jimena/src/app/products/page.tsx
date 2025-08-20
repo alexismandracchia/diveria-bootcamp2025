@@ -33,12 +33,12 @@ export default function Products() {
   return (
     <main className="max-w-6xl mx-auto p-6">
       <section className="text-center mb-12">
-        <h1 className="text-3xl font-bold mb-2">Nuestros Productos</h1>
-        <p className="text-gray-600">Explora nuestra selección de productos de prueba.</p>
+        <h1 className="text-4xl font-bold mb-4">Our Products</h1>
+        <p className="text-lg">Explore our selection of test products.</p>
       </section>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {loading && <p>Cargando productos...</p>}
+        {loading && <p>Loadong products...</p>}
         {error && <p className="text-red-500">{error}</p>}
         {!loading && !error && products.map(product => (
           <div key={product.id} className="border rounded p-4 flex flex-col items-center">
