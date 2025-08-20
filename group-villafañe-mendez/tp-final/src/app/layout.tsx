@@ -1,6 +1,8 @@
 import { Roboto } from "next/font/google";
 import "./globals.css";
 import "flowbite";
+import type { ReactNode } from "react";
+import { AuthProvider } from "./context/AuthProvider";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -11,12 +13,12 @@ const roboto = Roboto({
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: ReactNode;
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={roboto.className}>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
   );
