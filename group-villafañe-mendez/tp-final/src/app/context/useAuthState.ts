@@ -13,7 +13,7 @@ export function useAuthState() {
   const [isAuthenticated, setIsAuthenticated] = useState(false)
 
   const login = async (email: string, password: string) => {
-    if (email === 'test@test.com' && password === '123456') {
+    if (email === 'test@test.com' && password === 'Test1234!') {
       const loggedUser = { id: '1', name: 'Gabriel', email }
       setUser(loggedUser)
       setIsAuthenticated(true)
