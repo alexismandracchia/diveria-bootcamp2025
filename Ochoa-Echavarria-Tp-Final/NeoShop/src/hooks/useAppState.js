@@ -20,7 +20,7 @@ export default function useAppState() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
-  // Para controlar cuándo debemos usar datos locales en lugar de hacer fetch
+  const [skipNextFetch, setSkipNextFetch] = useState(false)
   const [useLocalData, setUseLocalData] = useState(false)
 
   const abortRef = useRef(null)
@@ -41,14 +41,13 @@ export default function useAppState() {
         if (storedProducts.length > 0) {
           setItems(storedProducts)
           setTotal(storedTotal)
-          setUseLocalData(true) // Usar datos locales en lugar de hacer fetch
+          setUseLocalData(true)
         } else {
-          // Si no hay datos locales, cargar desde API
           fetchItems()
         }
       } catch (e) {
         console.error('Error loading products from localStorage:', e)
-        fetchItems() // Fallback a API si hay error
+        fetchItems()
       }
     }
 
@@ -57,11 +56,11 @@ export default function useAppState() {
 
   // Guardar en localStorage cuando cambien los productos
   useEffect(() => {
-    if (items.length > 0) {
+    if (items.length > 0 && useLocalData) {
       localStorage.setItem('products', JSON.stringify(items))
       localStorage.setItem('productsTotal', total.toString())
     }
-  }, [items, total])
+  }, [items, total, useLocalData])
 
   // Auth simulada
   const DEMO = { email: 'admin@bootcamp.com', password: 'password', name: 'User' }
@@ -80,53 +79,87 @@ export default function useAppState() {
     setUser(null)
   }, [])
 
-  // Helper fetch
   const fetchJson = async (url, options) => {
     const res = await fetch(url, options)
     if (!res.ok) throw new Error(`Error ${res.status}: ${res.statusText}`)
     return res.json()
   }
 
-  // Listado con paginación/búsqueda
-  const fetchItems = useCallback(async (opts = {}) => {
-    // Si estamos usando datos locales, no hacer fetch
-    if (useLocalData) return
+  //Listado con paginación/búsqueda - Versión corregida
+  const fetchItems = useCallback(async () => {
+    if (skipNextFetch) {
+      setSkipNextFetch(false)
+      return
+    }
 
-    const p = opts.page ?? page
-    const l = opts.limit ?? limit
-    const q = opts.query ?? query
-    const skip = (p - 1) * l
+    // Si estamos en modo datos locales, no hacer fetch a la API
+    if (useLocalData) {
+      console.log('Modo local activado, skipping API fetch')
+      return
+    }
 
     setLoading(true)
     setError(null)
-    if (abortRef.current) abortRef.current.abort()
+
+    if (abortRef.current) {
+      abortRef.current.abort()
+    }
     abortRef.current = new AbortController()
 
     try {
-      const base = q
-        ? `${API}/products/search?q=${encodeURIComponent(q)}`
+      const skip = (page - 1) * limit
+      const base = query
+        ? `${API}/products/search?q=${encodeURIComponent(query)}`
         : `${API}/products`
       const sep = base.includes('?') ? '&' : '?'
-      const url = `${base}${sep}limit=${l}&skip=${skip}&select=title,price,thumbnail,category,brand,rating,stock`
+      const url = `${base}${sep}limit=${limit}&skip=${skip}&select=title,price,thumbnail,category,brand,rating,stock`
+
+      console.log('Fetching from API:', url)
+
       const data = await fetchJson(url, { signal: abortRef.current.signal })
       setItems(data.products || [])
       setTotal(data.total || 0)
+
     } catch (e) {
-      if (e.name !== 'AbortError') setError(e.message)
+      if (e.name !== 'AbortError') {
+        setError(e.message)
+        console.error('Fetch error:', e)
+      }
     } finally {
       setLoading(false)
     }
-  }, [page, limit, query, useLocalData])
+  }, [page, limit, query, skipNextFetch, useLocalData])
 
-  // Actualizar fetchItems cuando cambien los parámetros (solo si no estamos usando datos locales)
+  // seEffect para fetch automático - Versión corregida
   useEffect(() => {
-    if (!useLocalData) {
-      fetchItems()
-    }
-  }, [page, limit, query, useLocalData, fetchItems])
+    fetchItems()
+  }, [page, limit, query, fetchItems])
+
+  // Setters mejorados para paginación
+  const changePage = useCallback((newPage) => {
+    setPage(newPage)
+    setSkipNextFetch(false)
+    // Al cambiar página, forzar modo API (no local)
+    setUseLocalData(false)
+  }, [])
+
+  const changeLimit = useCallback((newLimit) => {
+    setLimit(newLimit)
+    setPage(1)
+    setSkipNextFetch(false)
+    setUseLocalData(false) // Forzar modo API
+  }, [])
+
+  const changeQuery = useCallback((newQuery) => {
+    setQuery(newQuery)
+    setPage(1)
+    setSkipNextFetch(false)
+    setUseLocalData(false) // Forzar modo API
+  }, [])
 
   const fetchProductById = useCallback(async (id) => {
-    setLoading(true); setError(null)
+    setLoading(true)
+    setError(null)
     try {
       // Primero buscar en los items locales
       const localItem = items.find(item => item.id === Number(id))
@@ -135,24 +168,26 @@ export default function useAppState() {
       // Si no está en local, buscar en la API
       return await fetchJson(`${API}/products/${Number(id)}`)
     } catch (e) {
-      setError(e.message); throw e
+      setError(e.message)
+      throw e
     } finally {
       setLoading(false)
     }
   }, [items])
 
   const addItem = useCallback(async (newItem) => {
-    // Crear un nuevo producto con ID único (usando timestamp negativo para evitar conflictos con la API)
+    // Crear un nuevo producto con ID único
     const created = {
       ...newItem,
-      id: -Date.now(), // ID negativo único
+      id: -Date.now(),
       isLocal: true
     }
 
     // Actualizar estado local
     setItems(prev => [created, ...prev])
     setTotal(t => t + 1)
-    setUseLocalData(true) // Cambiar a modo datos locales
+    setUseLocalData(true)
+    setSkipNextFetch(true) // Evitar fetch automático
 
     return created
   }, [])
@@ -166,7 +201,8 @@ export default function useAppState() {
         ? { ...p, ...updatedData, isModified: true }
         : p
     ))
-    setUseLocalData(true) // Cambiar a modo datos locales
+    setUseLocalData(true)
+    setSkipNextFetch(true) // Evitar fetch automático
 
     return { id: targetId, ...updatedData }
   }, [])
@@ -177,7 +213,8 @@ export default function useAppState() {
     // Eliminación del estado local
     setItems(prev => prev.filter(p => Number(p.id) !== targetId))
     setTotal(t => Math.max(0, t - 1))
-    setUseLocalData(true) // Cambiar a modo datos locales
+    setUseLocalData(true)
+    setSkipNextFetch(true) // Evitar fetch automático
   }, [])
 
   // Función para resetear y volver a cargar desde la API
@@ -187,24 +224,69 @@ export default function useAppState() {
     setUseLocalData(false)
     setItems([])
     setTotal(0)
+    setSkipNextFetch(false)
     fetchItems()
   }, [fetchItems])
 
   return useMemo(() => ({
-    // estado
-    isAuthenticated, user, items, total, page, limit, query, loading, error,
+    isAuthenticated,
+    user,
+    items,
+    total,
+    page,
+    limit,
+    query,
+    loading,
+    error,
     useLocalData,
-    // setters UI
-    setPage, setLimit, setQuery,
+    skipNextFetch,
+
+    // setters UI - usar las versiones mejoradas
+    setPage: changePage,
+    setLimit: changeLimit,
+    setQuery: changeQuery,
+    setSkipNextFetch,
+
     // auth
-    loginUser, logoutUser,
+    loginUser,
+    logoutUser,
+
     // API/CRUD
-    fetchItems, fetchProductById, addItem, updateItem, deleteItem,
-    resetToAPIData
+    fetchItems,
+    fetchProductById,
+    addItem,
+    updateItem,
+    deleteItem,
+    resetToAPIData,
+
+    // función adicional para forzar fetch
+    refreshData: () => {
+      setUseLocalData(false)
+      setSkipNextFetch(false)
+      fetchItems()
+    }
   }), [
-    isAuthenticated, user, items, total, page, limit, query, loading, error,
+    isAuthenticated,
+    user,
+    items,
+    total,
+    page,
+    limit,
+    query,
+    loading,
+    error,
     useLocalData,
-    loginUser, logoutUser, fetchItems, fetchProductById, addItem, updateItem, deleteItem,
+    skipNextFetch,
+    changePage,
+    changeLimit,
+    changeQuery,
+    loginUser,
+    logoutUser,
+    fetchItems,
+    fetchProductById,
+    addItem,
+    updateItem,
+    deleteItem,
     resetToAPIData
   ])
 }
