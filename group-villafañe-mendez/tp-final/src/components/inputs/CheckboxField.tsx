@@ -5,17 +5,17 @@ type CheckboxFieldProps = {
   id?: string;
   name?: string;
   label?: React.ReactNode;
-  checked?: boolean; // uso controlado
-  defaultChecked?: boolean; // uso no controlado
+  checked?: boolean; 
+  defaultChecked?: boolean; 
   onChange?: (checked: boolean, e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
   required?: boolean;
   disabled?: boolean;
-  indeterminate?: boolean; // estado intermedio (—)
-  className?: string; // clases del contenedor
-  inputClassName?: string; // clases extra para el input
-  labelClassName?: string; // clases extra para el label
-  helperText?: React.ReactNode; // texto de ayuda/validación
+  indeterminate?: boolean; 
+  className?: string; 
+  inputClassName?: string; 
+  labelClassName?: string; 
+  helperText?: React.ReactNode; 
 };
 
 const CheckboxField = forwardRef<HTMLInputElement, CheckboxFieldProps>(
@@ -42,7 +42,6 @@ const CheckboxField = forwardRef<HTMLInputElement, CheckboxFieldProps>(
     const inputId = id ?? `cb-${autoId}`;
     const innerRef = useRef<HTMLInputElement | null>(null);
 
-    // merge refs
     useEffect(() => {
       if (!ref) return;
       if (typeof ref === "function") ref(innerRef.current);
