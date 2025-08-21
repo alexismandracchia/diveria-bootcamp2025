@@ -194,7 +194,9 @@ function EditProductForm() {
             </div>
 
             <Button type="submit" disabled={!productData}>
+            <Button type="submit" disabled={!productData}>
               Actualizar
+            </Button>
             </Button>
           </>
         )}

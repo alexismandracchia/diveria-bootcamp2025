@@ -9,7 +9,6 @@ function Navbar() {
   const router = useRouter();
   const hasToken = typeof window !== "undefined" && localStorage.getItem("token");
   const isAdmin = isAuthenticated && hasToken;
-
   const handleLogoutButton = () => {
     handleLogout();
     router.push("/");
