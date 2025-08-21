@@ -1,18 +1,27 @@
 import { useState, useEffect } from "react";
 import { useAppState } from "@/hooks/useAppState";
 import { Item } from "@/types/app.types";
+import Card from "../ui/Card";
+import Button from "../ui/Button";
+import StatusMessage from "../ui/StatusMessage";
+import React from "react";
 
-export default function DeleteProductForm() {
-    const { items, deleteItem } = useAppState();
+function DeleteProductForm() {
+    const { items, deleteItem, error } = useAppState();
     const [productId, setProductId] = useState<number | "">("");
     const [productData, setProductData] = useState<Item | null>(null);
+    const [success, setSuccess] = useState<string | null>(null);
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!productId) return;
         await deleteItem(productId);
-        setProductId("");
-    };
+        setSuccess("Producto eliminado");
+        setTimeout(() => {setSuccess(null);}, 4000);
+        setTimeout(() => {
+          setProductId("");
+        }, 3000);
+        };
 
     useEffect(() => {
         if (productId === "" || items.length === 0) {
@@ -25,6 +34,7 @@ export default function DeleteProductForm() {
     }, [productId, items]);
 
     return (
+      <>
         <div className="w-full max-w-md mx-auto bg-gray-800 shadow-md rounded-lg rounded-tl-none p-6">
       <h2 className="text-2xl font-bold mb-4 text-center text-gray-200">
         Borrar producto
@@ -46,17 +56,16 @@ export default function DeleteProductForm() {
         </div>
         {
             productData && (
-                <div key={productId} className="border rounded p-4 flex flex-col items-center">
-                    <img src={productData?.image} alt={productData?.title} className="w-32 h-32 object-contain mb-4" />
-                    <h2 className="font-semibold text-lg text-center">{productData?.title}</h2>
-                    <p className="text-gray-700 mt-2 text-center">${productData?.price}</p>
-                </div>
+                <Card product={productData} />
             )
         }
-        <button type="submit" className="cursor-pointer bg-blue-500 text-white rounded py-2 hover:bg-blue-600 disabled:bg-gray-700 disabled:cursor-not-allowed" disabled={!productData}>
+        <Button type="submit" disabled={!productData}>
           Borrar
-        </button>
+        </Button>
       </form>
       </div>
-    );
+        { error ? <StatusMessage message={error} type="error" /> : success ? <StatusMessage message={success} type="success" /> : null}
+    </>  );
 }
+
+export default React.memo(DeleteProductForm);

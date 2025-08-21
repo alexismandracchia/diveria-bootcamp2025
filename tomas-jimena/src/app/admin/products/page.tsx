@@ -10,8 +10,8 @@ export default function AdminProducts() {
     const [activeTab, setActiveTab] = useState<"create" | "edit" | "delete">("create");
 
   return (
-    <main>
-      <section className="text-center mb-12">
+    <main className="w-screen">
+      <section className="text-center mb-6">
         <h1 className="text-4xl font-bold mb-4">
           Product Managment
         </h1>

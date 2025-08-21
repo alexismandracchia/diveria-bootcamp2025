@@ -1,11 +1,11 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useAppContext } from "@/context/AppContext";
+import Card from "@/components/ui/Card";
+import React from "react";
 
-
-export default function Products() {
+function Products() {
   const { items, loading, error, getItems } = useAppContext();
-
 
   useEffect(() => {
     getItems();
@@ -22,13 +22,11 @@ export default function Products() {
         {loading && <p>Loading products...</p>}
         {error && <p className="text-red-500">{error}</p>}
         {!loading && !error && items.map(product => (
-          <div key={product.id} className="border rounded p-4 flex flex-col items-center">
-            <img src={product.image} alt={product.title} className="w-32 h-32 object-contain mb-4" />
-            <h2 className="font-semibold text-lg text-center">{product.title}</h2>
-            <p className="text-gray-700 mt-2 text-center">${product.price}</p>
-          </div>
+          <Card key={product.id} product={product} />
         ))}
       </section>
     </main>
   );
 }
+
+export default React.memo(Products);

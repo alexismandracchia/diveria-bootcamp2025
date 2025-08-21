@@ -1,10 +1,13 @@
 "use client";
 import { useState } from "react";
-import { useAppContext } from "@/context/AppContext"; // <- suponiendo que envolviste tu App con un context
+import { useAppContext } from "@/context/AppContext";
+import { useRouter } from "next/navigation";
+import Button from "../ui/Button";
+import React from "react";
 
-export default function LoginForm() {
+function LoginForm() {
   const { login, loading, error } = useAppContext();
-
+  const router = useRouter();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
@@ -20,6 +23,9 @@ export default function LoginForm() {
       setUsername("");
       setPassword("");
       setSuccess("Inicio exitoso");
+      setTimeout(() => {
+        router.push("/products");
+      }, 1000);
     }
   };
 
@@ -49,16 +55,12 @@ export default function LoginForm() {
           required
         />
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="bg-blue-500 p-2 rounded flex items-center justify-center gap-2 hover:bg-blue-600 transition disabled:opacity-50"
-        >
+        <Button type="submit" disabled={loading}>
           {loading && (
             <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
           )}
           {loading ? "Logging in..." : "Login"}
-        </button>
+        </Button>
       </form>
       <div className="h-5 w-full flex justify-center items-center -mt-5">
         {error && <p className="text-red-500 text-sm">{error}</p>}
@@ -67,3 +69,5 @@ export default function LoginForm() {
     </>
   );
 }
+
+export default React.memo(LoginForm);
