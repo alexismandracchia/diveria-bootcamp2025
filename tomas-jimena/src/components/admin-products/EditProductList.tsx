@@ -1,11 +1,14 @@
 import { useAppState } from "@/hooks/useAppState";
 import { Item } from "@/types/app.types";
 import { useEffect, useState } from "react";
+import Button from "../ui/Button";
+import StatusMessage from "../ui/StatusMessage";
 
 export default function EditProductForm() {
-  const { getItems, items, updateItem } = useAppState();
+  const { getItems, items, updateItem, error} = useAppState();
   const [productId, setProductId] = useState<number | "">("");
   const [productData, setProductData] = useState<Item | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -42,18 +45,22 @@ export default function EditProductForm() {
     };
 
     await updateItem(updatedItem);
-
-    setProductId("");
-    setProductData(null);
-    setImageFile(null);
-    setPreview(null);
+    setSuccess("Producto actualizado");
+    setTimeout(() => {setSuccess(null);}, 3000);
+    setTimeout(() => {
+      setProductId("");
+      setProductData(null);
+      setImageFile(null);
+      setPreview(null);
+    }, 4000);
   };
 
   return (
-    <div className="w-full max-w-md mx-auto bg-gray-800 shadow-md rounded-lg p-6">
-      <h2 className="text-2xl font-bold mb-4 text-center text-gray-200">
-        Editar producto
-      </h2>
+    <>
+      <div className="w-full max-w-md mx-auto bg-gray-800 shadow-md rounded-lg rounded-tl-none p-6">
+        <h2 className="text-2xl font-bold mb-4 text-center text-gray-200">
+          Editar producto
+        </h2>
 
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Select de producto */}
@@ -64,7 +71,7 @@ export default function EditProductForm() {
           <select
             value={productId || ""}
             onChange={(e) => setProductId(Number(e.target.value))}
-            className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none"
+            className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none bg-gray-800"
             required
           >
             <option value="">-- Seleccione un producto --</option>
@@ -185,16 +192,14 @@ export default function EditProductForm() {
               />
             </div>
 
-            <button
-              type="submit"
-              className="cursor-pointer bg-blue-500 text-white rounded py-2 hover:bg-blue-600 disabled:bg-gray-700 disabled:cursor-not-allowed"
-              disabled={!productData}
-            >
+            <Button type="submit" disabled={!productData}>
               Actualizar
-            </button>
+            </Button>
           </>
         )}
       </form>
     </div>
+      {error ? <StatusMessage message={error} type="error" /> : success ? <StatusMessage message={success} type="success" /> : null}
+    </>
   );
 }

@@ -3,14 +3,18 @@ import { useState } from "react";
 
 import { useAppState } from "@/hooks/useAppState";
 import { NewItem } from "@/types/app.types";
+import Button from "../ui/Button";
+import StatusMessage from "../ui/StatusMessage";
 
 export default function CreateProductForm() {
-  const { addItem } = useAppState();
+  const { addItem, error, loading} = useAppState();
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
-
+  const [success, setSuccess] = useState<string | null>(null);
+  
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSuccess(null);
     const formData = new FormData(e.currentTarget);
 
     const newItem: NewItem = {
@@ -22,6 +26,8 @@ export default function CreateProductForm() {
     };
 
     addItem(newItem);
+    setSuccess("Producto creado");
+    setTimeout(() => {setSuccess(null);}, 3000);
 
     e.currentTarget.reset();
     setImageFile(null);
@@ -29,6 +35,7 @@ export default function CreateProductForm() {
   };
 
   return (
+    <>
     <div className="w-full max-w-md mx-auto bg-gray-800 shadow-md rounded-lg rounded-tl-none p-6">
       <h2 className="text-2xl font-bold mb-4 text-center text-gray-200">
         Nuevo producto
@@ -127,13 +134,12 @@ export default function CreateProductForm() {
           />
         </div>
 
-        <button
-          type="submit"
-          className="cursor-pointer bg-blue-500 text-white rounded py-2 hover:bg-blue-600"
-        >
+        <Button type="submit" disabled={loading}>
           Crear
-        </button>
+        </Button>
       </form>
     </div>
+        {error ? <StatusMessage message={error} type="error" /> : success ? <StatusMessage message={success} type="success" /> : null}
+    </>
   );
 }

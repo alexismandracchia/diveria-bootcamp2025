@@ -12,6 +12,10 @@ export const useAppState = (): AppState => {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    getItems();
+  }, []);
+
+  useEffect(() => {
     const storedUser = localStorage.getItem("user");
     const storedToken = localStorage.getItem("token");
 

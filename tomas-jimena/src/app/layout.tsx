@@ -1,12 +1,7 @@
 "use client";
 
-import { useState } from "react";
-
-
 import Navbar from "@/components/navbar/Navbar";
 import Footer from "@/components/footer/Footer";
-import ThemeToggle from "@/components/theme-toggle/ThemeToggle";
-
 import { AppProvider } from "@/context/AppContext";
 import { Poppins } from "next/font/google";
 import React from "react";
@@ -25,7 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${poppins.variable} font-sans flex flex-col min-h-screen`}
+        className={`${poppins.variable} font-sans `}
       >
         <AppProvider>
           <Navbar />
