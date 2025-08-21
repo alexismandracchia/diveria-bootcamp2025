@@ -1,0 +1,40 @@
+.not-found-container {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background: var(--color-bg);
+  color: var(--color-text);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  text-align: center;
+  margin: 3rem 0;
+}
+
+.not-found-title {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #ff5555;
+}
+
+.not-found-message {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  max-width: 500px;
+}
+
+.not-found-face {
+  font-size: 5rem;
+  margin: 20px 0;
+}
+
+.not-found-redirect {
+  font-size: 1rem;
+  color: var(--color-text);
+}
+
+.not-found-redirect span {
+  font-weight: bold;
+  color: #007ACC;
+}
