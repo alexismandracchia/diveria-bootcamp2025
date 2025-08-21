@@ -24,16 +24,22 @@ export function useAuthState() {
       setIsAuthenticated(false);
       setUser(null);
     } finally {
-      setIsAuthLoading(false)
+      setIsAuthLoading(false);
     }
   }, []);
 
-  const login = async (email: string, password: string) => {
+  const login = async (
+    email: string,
+    password: string,
+    rememberMe: boolean
+  ) => {
     if (email === "test@test.com" && password === "Test1234!") {
       const loggedUser = { id: "1", name: "Gabriel", email };
       setUser(loggedUser);
       setIsAuthenticated(true);
-      localStorage.setItem("user", JSON.stringify(loggedUser));
+      if (rememberMe) {
+        localStorage.setItem("user", JSON.stringify(loggedUser));
+      }
     } else {
       throw new Error("Credenciales inválidas");
     }

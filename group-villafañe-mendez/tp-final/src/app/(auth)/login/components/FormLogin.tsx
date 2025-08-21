@@ -13,6 +13,7 @@ const FormLogin = () => {
   const [password, setPassword] = useState("");
   const [emailError, setEmailError] = useState("");
   const [passwordError, setPasswordError] = useState("");
+  const [rememberMe, setRememberMe] = useState(false);
 
   const { showToast } = useToast();
   const { login } = useAuth();
@@ -33,8 +34,7 @@ const FormLogin = () => {
     }
 
     try {
-      await login(email, password);
-      showToast("¡Bienvenido!");
+      await login(email, password, rememberMe);
     } catch (err: any) {
       showToast(err.message || "Error en el inicio de sesión");
       setEmailError(" ");
@@ -64,7 +64,11 @@ const FormLogin = () => {
         error={passwordError}
       />
       <div className="flex items-center my-4">
-        <CheckboxField label="Remember me" />
+        <CheckboxField 
+          label="Remember me"
+          checked={rememberMe} 
+          onChange={(checked) => setRememberMe(checked)} 
+        />
       </div>
       <ShadowButton type="submit">Submit</ShadowButton>
     </form>
