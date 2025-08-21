@@ -3,6 +3,7 @@ import "./globals.css";
 import "flowbite";
 import type { ReactNode } from "react";
 import { AuthProvider } from "../context/AuthProvider";
+import { ToastProvider } from "./context/ToastContext";
 
 const roboto = Roboto({
   weight: ["400", "500", "700"],
@@ -18,7 +19,11 @@ export default function RootLayout({
   return (
     <html lang="es" suppressHydrationWarning>
       <body className={roboto.className}>
-        <AuthProvider>{children}</AuthProvider>
+        <AuthProvider>
+          <ToastProvider>
+            {children}
+          </ToastProvider>
+        </AuthProvider>
       </body>
     </html>
   );
