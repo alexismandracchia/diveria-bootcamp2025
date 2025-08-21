@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import { Item, User, AppState } from "@/types/app.types";
+import { Item, NewItem, User, AppState } from "@/types/app.types";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
@@ -54,7 +54,6 @@ export const useAppState = (): AppState => {
       return false;
     } finally {
       setLoading(false);
-      
     }
   };
 
@@ -78,14 +77,14 @@ export const useAppState = (): AppState => {
     }
   };
 
-  const addItem = async (item: Item) => {
+  const addItem = async (item: NewItem) => {
     setLoading(true);
     setError(null);
     try {
       const { data } = await axios.post<Item>(`${API_URL}/products`, item, {
         headers: { "Content-Type": "application/json" },
       });
-      setItems((prev) => [...prev, data]);
+      setItems((prev) => [...prev, data]); // data ya tiene el id generado
     } catch (err: any) {
       setError(err.message || "Error al agregar producto");
     } finally {

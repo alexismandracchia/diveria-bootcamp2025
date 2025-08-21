@@ -7,6 +7,8 @@ export type Item = {
   image?: string;
 };
 
+export type NewItem = Omit<Item, "id">;
+
 export type User = {
   id: number;
   name: string;
@@ -22,9 +24,8 @@ export type AppState = {
   handleLogin: (userData: User, token: string) => void;
   handleLogout: () => void;
   getItems: () => Promise<void>;
-  addItem: (item: Item) => Promise<void>;
+  addItem: (item: NewItem) => Promise<void>;
   updateItem: (item: Item) => Promise<void>;
   deleteItem: (id: number) => Promise<void>;
   login: (username: string, password: string) => Promise<boolean>;
-
 };

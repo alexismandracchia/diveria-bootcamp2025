@@ -8,9 +8,19 @@ export default function LoginForm() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const [success, setSuccess] = useState<string | null>(null);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(username, password);
+    setSuccess(null);
+
+    const ok = await login(username, password);
+
+    if (ok) {
+      setUsername("");
+      setPassword("");
+      setSuccess("Inicio exitoso");
+    }
   };
 
   return (
@@ -49,9 +59,10 @@ export default function LoginForm() {
           )}
           {loading ? "Logging in..." : "Login"}
         </button>
-      </form>{" "}
+      </form>
       <div className="h-5 w-full flex justify-center items-center -mt-5">
         {error && <p className="text-red-500 text-sm">{error}</p>}
+        {success && <p className="text-green-500 text-sm">{success}</p>}
       </div>
     </>
   );
