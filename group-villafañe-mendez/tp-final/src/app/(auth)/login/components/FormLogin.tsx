@@ -5,7 +5,7 @@ import { useState } from "react";
 import type { FormEvent } from "react";
 import CheckboxField from "@/components/inputs/CheckboxField";
 import { validateLoginForm } from "@/lib/validators";
-import { useToast } from "@/app/context/ToastContext";
+import { useToast } from "@/context/ToastContext";
 import { useAuth } from "@/context/AuthProvider";
 
 const FormLogin = () => {
