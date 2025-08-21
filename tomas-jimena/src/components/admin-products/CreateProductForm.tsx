@@ -1,8 +1,13 @@
+"use client";
+import { useState } from "react";
+
 import { useAppState } from "@/hooks/useAppState";
 import { NewItem } from "@/types/app.types";
 
 export default function CreateProductForm() {
   const { addItem } = useAppState();
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [preview, setPreview] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -13,10 +18,14 @@ export default function CreateProductForm() {
       price: Number(formData.get("price")),
       description: formData.get("description") as string,
       category: formData.get("category") as string,
-      image: undefined,
+      image: preview || undefined,
     };
+
     addItem(newItem);
+
     e.currentTarget.reset();
+    setImageFile(null);
+    setPreview(null);
   };
 
   return (
@@ -84,6 +93,40 @@ export default function CreateProductForm() {
             required
           />
         </div>
+
+        <div
+          className="border-2 border-dashed p-4 rounded text-center cursor-pointer"
+          onDrop={(e) => {
+            e.preventDefault();
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith("image/")) {
+              setImageFile(file);
+              setPreview(URL.createObjectURL(file));
+            }
+          }}
+          onDragOver={(e) => e.preventDefault()}
+          onClick={() => document.getElementById("imageInput")?.click()}
+        >
+          {preview ? (
+            <img src={preview} alt="Preview" className="mx-auto max-h-48" />
+          ) : (
+            <p>Arrastra la imagen o haz click para seleccionar</p>
+          )}
+          <input
+            type="file"
+            accept="image/*"
+            id="imageInput"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (file) {
+                setImageFile(file);
+                setPreview(URL.createObjectURL(file));
+              }
+            }}
+            className="hidden"
+          />
+        </div>
+
         <button
           type="submit"
           className="cursor-pointer bg-blue-500 text-white rounded py-2 hover:bg-blue-600"
