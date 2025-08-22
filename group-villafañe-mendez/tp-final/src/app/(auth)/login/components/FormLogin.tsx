@@ -1,7 +1,7 @@
 "use client";
 import { ShadowButton } from "@/components/buttons/Buttons";
 import { FloatingInput } from "@/components/inputs/Inputs";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import type { FormEvent } from "react";
 import CheckboxField from "@/components/inputs/CheckboxField";
 import { validateLoginForm } from "@/lib/validators";
@@ -18,17 +18,15 @@ const FormLogin = () => {
   const { showToast } = useToast();
   const { login } = useAuth();
 
+  const isValid = useMemo(() => {
+    const errors = validateLoginForm(email, password);
+    return !errors;
+  }, [email, password]);
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-  
-    setEmailError("");
-    setPasswordError("");
-  
-    const errors = validateLoginForm(email, password);
-  
-    if (errors) {
-      setEmailError(errors.email || "");
-      setPasswordError(errors.password || "");
+
+    if (!isValid) {
       showToast("Algunos valores no son válidos, verifica tu información.");
       return;
     }
@@ -36,12 +34,11 @@ const FormLogin = () => {
     try {
       await login(email, password, rememberMe);
     } catch (err: any) {
-      showToast(err.message || "Error en el inicio de sesión");
-      setEmailError(" ");
-      setPasswordError(err.message || "Credenciales inválidas");
+      showToast(err.message || "Credenciales inválidas");
+      setEmailError("Ingresa un email valido");
+      setPasswordError("Verifica tu contraseña");
     }
   };
-
 
   return (
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
@@ -64,13 +61,15 @@ const FormLogin = () => {
         error={passwordError}
       />
       <div className="flex items-center my-4">
-        <CheckboxField 
+        <CheckboxField
           label="Remember me"
-          checked={rememberMe} 
-          onChange={(checked) => setRememberMe(checked)} 
+          checked={rememberMe}
+          onChange={(checked) => setRememberMe(checked)}
         />
       </div>
-      <ShadowButton type="submit">Submit</ShadowButton>
+      <ShadowButton type="submit" disabled={!isValid}>
+        Submit
+      </ShadowButton>
     </form>
   );
 };
