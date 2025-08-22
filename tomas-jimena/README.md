@@ -7,32 +7,48 @@ Este proyecto es una aplicación web desarrollada con Next.js y TypeScript que p
 ## Instalación
 
 1. Clonar el repositorio:
-   `git clone https://github.com/alexismandracchia/diveria-bootcamp2025.git`
+
+   ```git clone https://github.com/alexismandracchia/diveria-bootcamp2025.git```
 
 2. Entrar en la carpeta del proyecto:
-   `cd diveria-bootcamp2025/tomas-jimena`
+   
+   ```cd diveria-bootcamp2025/tomas-jimena```
 
-3. Instalar dependencias:
-   `npm install`
+4. Instalar dependencias:
+   
+   ```npm install```
+
    o
-   `yarn`
+
+   ```yarn```
 
 ## Ejecución
 
 1. Correr la app en modo desarrollo:
-   `npm run dev`
+   
+   ```npm run dev```
+
    o
-   `yarn dev`
+
+   ```yarn dev```
+
    Esto abrirá la app en http://localhost:3000
 
-2. Para compilar y servir en producción:
-   `npm run build`
-   `npm start`
+3. Para compilar y servir en producción:
+
+   ```npm run build```
+
+   ```npm start```
+
     o
-   `yarn build`
-   `yarn start`
+
+   ```yarn build```
+
+   ```yarn start```
 
 ## Credenciales de prueba
 Estas credenciales permiten simular el login sin necesidad de un backend real.
-_Username:_ mor*2314
-*Password:* 83r5^*
+
+**Username:** mor_2314
+
+**Password:** 83r5^_
