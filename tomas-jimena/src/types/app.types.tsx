@@ -20,6 +20,8 @@ export type AppState = {
   isAuthenticated: boolean;
   user: User | null;
   loading: boolean;
+  loadingItems: boolean;
+  success: string | null;
   error: string | null;
   handleLogin: (userData: User, token: string) => void;
   handleLogout: () => void;
@@ -28,4 +30,7 @@ export type AppState = {
   updateItem: (item: Item) => Promise<void>;
   deleteItem: (id: number) => Promise<void>;
   login: (username: string, password: string) => Promise<boolean>;
+
+  clearError: () => void;
+  clearSuccess: () => void;
 };

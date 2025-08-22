@@ -8,12 +8,11 @@ export const useAppState = (): AppState => {
   const [items, setItems] = useState<Item[]>([]);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState<User | null>(null);
+  const [loadingItems, setLoadingItems] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
-  useEffect(() => {
-    getItems();
-  }, []);
 
   useEffect(() => {
     const storedUser = localStorage.getItem("user");
@@ -52,6 +51,7 @@ export const useAppState = (): AppState => {
       };
 
       handleLogin(userData, data.token);
+      setSuccess("Inicio de sesión exitoso");
       return true;
     } catch (err: any) {
       setError(err.response?.data?.message || "Invalid credentials");
@@ -69,7 +69,7 @@ export const useAppState = (): AppState => {
   };
 
   const getItems = async () => {
-    setLoading(true);
+    setLoadingItems(true);
     setError(null);
     try {
       const { data } = await axios.get<Item[]>(`${API_URL}/products`);
@@ -77,7 +77,7 @@ export const useAppState = (): AppState => {
     } catch (err: any) {
       setError(err.message || "Error al obtener productos");
     } finally {
-      setLoading(false);
+      setLoadingItems(false);
     }
   };
 
@@ -126,11 +126,15 @@ export const useAppState = (): AppState => {
     }
   };
 
+  const clearError: () => void = () => setError(null);
+  const clearSuccess: () => void = () => setSuccess(null);
+
   return {
     items,
     isAuthenticated,
     user,
     loading,
+    success,
     error,
     handleLogin,
     handleLogout,
@@ -139,5 +143,8 @@ export const useAppState = (): AppState => {
     updateItem,
     deleteItem,
     login,
+    clearError,
+    clearSuccess,
+    loadingItems
   };
 };

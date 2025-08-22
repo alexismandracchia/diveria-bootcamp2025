@@ -5,7 +5,7 @@ import Card from "@/components/ui/Card";
 import React from "react";
 
 function Products() {
-  const { items, loading, error, getItems } = useAppContext();
+  const { items, loadingItems, error, getItems } = useAppContext();
 
   useEffect(() => {
     getItems();
@@ -19,9 +19,9 @@ function Products() {
       </section>
 
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {loading && <p>Loading products...</p>}
+        {loadingItems && <p>Loading products...</p>}
         {error && <p className="text-red-500">{error}</p>}
-        {!loading && !error && items.map(product => (
+        {!loadingItems && !error && items.map(product => (
           <Card key={product.id} product={product} />
         ))}
       </section>

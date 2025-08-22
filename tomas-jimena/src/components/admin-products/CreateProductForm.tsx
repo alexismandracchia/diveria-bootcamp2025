@@ -134,9 +134,9 @@ function CreateProductForm() {
           />
         </div>
 
-        <Button type="submit" disabled={loading}>
-          Crear
-        </Button>
+          <Button type="submit" loading={loading}>
+            {loading ? "Creating..." : "Create"}
+          </Button>
       </form>
     </div>
         {error ? <StatusMessage message={error} type="error" /> : success ? <StatusMessage message={success} type="success" /> : null}

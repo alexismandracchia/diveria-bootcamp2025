@@ -6,7 +6,10 @@ import StatusMessage from "../ui/StatusMessage";
 import React from "react";
 
 function EditProductForm() {
-  const { getItems, items, updateItem, error} = useAppState();
+  const truncate = (s: string, n = 40) =>
+    s.length > n ? s.slice(0, n - 1) + "…" : s;
+
+  const { getItems, items, updateItem, error, loading } = useAppState();
   const [productId, setProductId] = useState<number | "">("");
   const [productData, setProductData] = useState<Item | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
@@ -47,13 +50,14 @@ function EditProductForm() {
 
     await updateItem(updatedItem);
     setSuccess("Producto actualizado");
-    setTimeout(() => {setSuccess(null);}, 3000);
+    setProductId("");
+    setProductData(null);
+    setImageFile(null);
+    setPreview(null);
+
     setTimeout(() => {
-      setProductId("");
-      setProductData(null);
-      setImageFile(null);
-      setPreview(null);
-    }, 4000);
+      setSuccess(null);
+    }, 3000);
   };
 
   return (
@@ -63,144 +67,154 @@ function EditProductForm() {
           Editar producto
         </h2>
 
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-        {/* Select de producto */}
-        <div className="flex flex-col">
-          <label className="mb-1 text-sm font-medium text-gray-300">
-            Producto:
-          </label>
-          <select
-            value={productId || ""}
-            onChange={(e) => setProductId(Number(e.target.value))}
-            className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none bg-gray-800"
-            required
-          >
-            <option value="">-- Seleccione un producto --</option>
-            {items.map((item) => (
-              <option key={item.id} value={item.id}>
-                {item.id} - {item.title}
-              </option>
-            ))}
-          </select>
-        </div>
-
-        {/* Campos del producto */}
-        {productData && (
-          <>
-            <input type="hidden" name="id" value={productData.id} />
-
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-300">
-                Nombre:
-              </label>
-              <input
-                className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none"
-                type="text"
-                name="name"
-                value={productData.title}
-                onChange={(e) =>
-                  setProductData((prev) =>
-                    prev ? { ...prev, title: e.target.value } : prev
-                  )
-                }
-                required
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-300">
-                Precio:
-              </label>
-              <input
-                className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none"
-                type="number"
-                name="price"
-                value={productData.price}
-                onChange={(e) =>
-                  setProductData((prev) =>
-                    prev ? { ...prev, price: Number(e.target.value) } : prev
-                  )
-                }
-                required
-              />
-            </div>
-
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-300">
-                Descripción:
-              </label>
-              <textarea
-                className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none"
-                name="description"
-                rows={3}
-                value={productData.description}
-                onChange={(e) =>
-                  setProductData((prev) =>
-                    prev ? { ...prev, description: e.target.value } : prev
-                  )
-                }
-                required
-              ></textarea>
-            </div>
-
-            <div className="flex flex-col">
-              <label className="mb-1 text-sm font-medium text-gray-300">
-                Categoría:
-              </label>
-              <input
-                className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none"
-                type="text"
-                name="category"
-                value={productData.category}
-                onChange={(e) =>
-                  setProductData((prev) =>
-                    prev ? { ...prev, category: e.target.value } : prev
-                  )
-                }
-                required
-              />
-            </div>
-
-            {/* Drag & Drop imagen */}
-            <div
-              className="border-2 border-dashed p-4 rounded text-center cursor-pointer"
-              onDrop={(e) => {
-                e.preventDefault();
-                const file = e.dataTransfer.files[0];
-                if (file && file.type.startsWith("image/")) {
-                  setImageFile(file);
-                  setPreview(URL.createObjectURL(file));
-                }
-              }}
-              onDragOver={(e) => e.preventDefault()}
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          {/* Select de producto */}
+          <div className="flex flex-col">
+            <label className="mb-1 text-sm font-medium text-gray-300">
+              Producto:
+            </label>
+            <select
+              value={productId || ""}
+              onChange={(e) => setProductId(Number(e.target.value))}
+              className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none bg-gray-800"
+              required
             >
-              {preview ? (
-                <img src={preview} alt="Preview" className="mx-auto max-h-48" />
-              ) : (
-                <p>Arrastra la imagen o haz click para seleccionar</p>
-              )}
-              <input
-                type="file"
-                accept="image/*"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) {
+              <option value="">-- Seleccione un producto --</option>
+              {items.map((item) => {
+                const full = `${item.id} - ${item.title}`;
+                const short = truncate(full, 40); // ajustá 40 a gusto
+                return (
+                  <option key={item.id} value={item.id} title={full}>
+                    {short}
+                  </option>
+                );
+              })}
+            </select>
+          </div>
+          {/* Campos del producto */}
+          {productData && (
+            <>
+              <input type="hidden" name="id" value={productData.id} />
+
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-300">
+                  Nombre:
+                </label>
+                <input
+                  className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                  type="text"
+                  name="name"
+                  value={productData.title}
+                  onChange={(e) =>
+                    setProductData((prev) =>
+                      prev ? { ...prev, title: e.target.value } : prev
+                    )
+                  }
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-300">
+                  Precio:
+                </label>
+                <input
+                  className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                  type="number"
+                  name="price"
+                  value={productData.price}
+                  onChange={(e) =>
+                    setProductData((prev) =>
+                      prev ? { ...prev, price: Number(e.target.value) } : prev
+                    )
+                  }
+                  required
+                />
+              </div>
+
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-300">
+                  Descripción:
+                </label>
+                <textarea
+                  className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                  name="description"
+                  rows={3}
+                  value={productData.description}
+                  onChange={(e) =>
+                    setProductData((prev) =>
+                      prev ? { ...prev, description: e.target.value } : prev
+                    )
+                  }
+                  required
+                ></textarea>
+              </div>
+
+              <div className="flex flex-col">
+                <label className="mb-1 text-sm font-medium text-gray-300">
+                  Categoría:
+                </label>
+                <input
+                  className="border rounded p-2 focus:ring-2 focus:ring-blue-400 outline-none"
+                  type="text"
+                  name="category"
+                  value={productData.category}
+                  onChange={(e) =>
+                    setProductData((prev) =>
+                      prev ? { ...prev, category: e.target.value } : prev
+                    )
+                  }
+                  required
+                />
+              </div>
+
+              {/* Drag & Drop imagen */}
+              <div
+                className="border-2 border-dashed p-4 rounded text-center cursor-pointer"
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const file = e.dataTransfer.files[0];
+                  if (file && file.type.startsWith("image/")) {
                     setImageFile(file);
                     setPreview(URL.createObjectURL(file));
                   }
                 }}
-                className="hidden"
-              />
-            </div>
-
-            <Button type="submit" disabled={!productData}>
-              Actualizar
-            </Button>
-          </>
-        )}
-      </form>
-    </div>
-      {error ? <StatusMessage message={error} type="error" /> : success ? <StatusMessage message={success} type="success" /> : null}
+                onDragOver={(e) => e.preventDefault()}
+              >
+                {preview ? (
+                  <img
+                    src={preview}
+                    alt="Preview"
+                    className="mx-auto max-h-48"
+                  />
+                ) : (
+                  <p>Arrastra la imagen o haz click para seleccionar</p>
+                )}
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0];
+                    if (file) {
+                      setImageFile(file);
+                      setPreview(URL.createObjectURL(file));
+                    }
+                  }}
+                  className="hidden"
+                />
+              </div>
+            </>
+          )}
+          <Button type="submit" loading={loading}>
+            {loading ? "Updating..." : "Update"}
+          </Button>
+        </form>
+      </div>
+      {error ? (
+        <StatusMessage message={error} type="error" />
+      ) : success ? (
+        <StatusMessage message={success} type="success" />
+      ) : null}
     </>
   );
 }
