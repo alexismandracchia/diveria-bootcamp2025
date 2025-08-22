@@ -5,22 +5,27 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 import { PATH } from '@/lib/common';
 
-type RouteType = "public" | "private";
+type RouteType = "auth" | "private";
 
 export function useRouteGuard(type: RouteType) {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, isAuthLoading } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
+    if (isAuthLoading) {
+      return;
+    }
+
     if (type === "private" && !isAuthenticated) {
       router.push(PATH.LOGIN);
     }
 
-    if (type === "public" && isAuthenticated && pathname === PATH.LOGIN) {
+    if (type === "auth" && isAuthenticated) {
       router.push(PATH.DASHBOARD);
     }
+    
   }, [isAuthenticated, type, router, pathname]);
 
-  return { isAuthenticated };
+  return { isAuthenticated, isAuthLoading };
 }

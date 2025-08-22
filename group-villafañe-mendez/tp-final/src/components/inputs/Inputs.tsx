@@ -9,6 +9,9 @@ interface FloatingInputProps {
   error?: string;
 }
 
+import { useState } from "react";
+import { FaEye, FaEyeSlash } from "react-icons/fa";
+
 export function FloatingInput({
   id,
   label,
@@ -19,10 +22,16 @@ export function FloatingInput({
   onChange,
   error,
 }: FloatingInputProps) {
+
+  const [showPassword, setShowPassword] = useState(false);
+
+  const isPassword = type === "password";
+  const inputType = isPassword && showPassword ? "text" : type;
+
   return (
     <div className={`relative ${className}`}>
       <input
-        type={type}
+        type={inputType}
         id={id}
         value={value}
         onChange={onChange}
@@ -52,6 +61,18 @@ export function FloatingInput({
       >
         {label}
       </label>
+
+      {isPassword && (
+        <button
+          type="button"
+          onClick={() => setShowPassword(!showPassword)}
+          className="absolute right-0 top-2.5 text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200"
+          tabIndex={-1}
+        >
+          {showPassword ? <FaEye size={18} /> : <FaEyeSlash size={18} />}
+        </button>
+      )}
+
       {error && (
         <p id={`${id}-error`} className="mt-1 text-xs text-red-600 dark:text-red-400">
           <span className="font-medium">Error:</span> {error}
