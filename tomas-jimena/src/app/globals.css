@@ -1,0 +1,70 @@
+@import "tailwindcss";
+
+*,
+*::before,
+*::after {
+  transition: background-color 0.5s ease, color 0.5s ease;
+}
+
+:root {
+  --color-bg: #dddddd;
+  --color-container: #e0e0e0;
+  --color-text: #e0e0e0;
+  --color-primary: #3c80d3;
+  --color-card: #e2e2e2;
+  --color-border: #679c12;
+  --color-close-bg: #f04e4e;
+  --color-theme-toggle: #636363;
+}
+
+:root[data-theme="dark"] {
+  --color-bg: #121212;
+  --color-container: #1e1e1e;
+  --color-text: #e0e0e0;
+  --color-primary: #5b8bbb;
+  --color-card: #363636;
+  --color-border: #ffd622af;
+  --color-theme-toggle: #cfcece;
+}
+
+html,
+body {
+  font-family: var(--font-poppins), sans-serif;
+  color: var(--color-text);  background-color: #111827;
+  margin: 0;
+  padding: 0;
+  width: 100vw;
+  height: 100vh;
+}
+
+body{
+  overflow-x: hidden;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  width: 100vw;
+  color: var(--color-text);
+  padding-top: 2rem;
+
+  margin-top: 65px;
+}
+
+form {
+  background-color: #1F2937;
+}
+
+a:hover {
+  opacity: 0.8;
+}
+
+.app-container {
+  background-color: #111827;
+  width: 100vw;
+}
