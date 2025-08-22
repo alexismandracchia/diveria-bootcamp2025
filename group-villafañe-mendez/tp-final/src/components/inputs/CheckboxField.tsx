@@ -5,17 +5,17 @@ type CheckboxFieldProps = {
   id?: string;
   name?: string;
   label?: React.ReactNode;
-  checked?: boolean; 
-  defaultChecked?: boolean; 
+  checked?: boolean;
+  defaultChecked?: boolean;
   onChange?: (checked: boolean, e: React.ChangeEvent<HTMLInputElement>) => void;
   value?: string;
   required?: boolean;
   disabled?: boolean;
-  indeterminate?: boolean; 
-  className?: string; 
-  inputClassName?: string; 
-  labelClassName?: string; 
-  helperText?: React.ReactNode; 
+  indeterminate?: boolean;
+  className?: string;
+  inputClassName?: string;
+  labelClassName?: string;
+  helperText?: React.ReactNode;
 };
 
 const CheckboxField = forwardRef<HTMLInputElement, CheckboxFieldProps>(
@@ -57,7 +57,7 @@ const CheckboxField = forwardRef<HTMLInputElement, CheckboxFieldProps>(
     }, [indeterminate, checked]);
 
     return (
-      <div className={`flex items-start ${className}`}>
+      <div className={`flex items-center ${className}`}>
         <input
           ref={innerRef}
           id={inputId}
@@ -96,14 +96,14 @@ const CheckboxField = forwardRef<HTMLInputElement, CheckboxFieldProps>(
             {label}
           </label>
 
-          {helperText ? (
+          {helperText && (
             <p
               id={`${inputId}-help`}
               className="mt-1 text-xs text-gray-500 dark:text-gray-400"
             >
               {helperText}
             </p>
-          ) : null}
+          )}
         </div>
       </div>
     );

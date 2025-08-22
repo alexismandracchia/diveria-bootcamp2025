@@ -44,7 +44,7 @@ const FormLogin = () => {
     <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
       <FloatingInput
         id="email"
-        label="Your email"
+        label="Email"
         type="email"
         value={email}
         className="my-3"
@@ -53,7 +53,7 @@ const FormLogin = () => {
       />
       <FloatingInput
         id="password"
-        label="Password"
+        label="Contraseña"
         type="password"
         value={password}
         className="my-3"
@@ -62,13 +62,13 @@ const FormLogin = () => {
       />
       <div className="flex items-center my-4">
         <CheckboxField
-          label="Remember me"
+          label="Recuedame"
           checked={rememberMe}
           onChange={(checked) => setRememberMe(checked)}
         />
       </div>
       <ShadowButton type="submit" disabled={!isValid}>
-        Submit
+        Ingresar
       </ShadowButton>
     </form>
   );
