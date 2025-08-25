@@ -1,13 +1,16 @@
-'use client'
+"use client";
 
-import type { ReactNode } from 'react';
-import { useRouteGuard } from '@/hooks/useRouteGuard';
+import type { ReactNode } from "react";
+import { useRouteGuard } from "@/hooks/useRouteGuard";
+import FullScreenLoader from "@/components/loaders/FullScreenLoader";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
-  const { isAuthenticated } = useRouteGuard("private");
+  const { isAuthenticated, isAuthLoading } = useRouteGuard("private");
 
-  if (!isAuthenticated) {
-    return <p>Redirigiendo...</p>;
+  if (isAuthLoading || !isAuthenticated) {
+    return (
+      <FullScreenLoader message="Redirigiendo..."/>
+    ); 
   }
 
   return <>{children}</>;

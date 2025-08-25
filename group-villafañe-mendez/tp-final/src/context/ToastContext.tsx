@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState, ReactNode } from "react";
-import { Toasts } from "../../components/toasts/Toasts";
+import { Toasts } from "@/components/toasts/Toasts";
 
 interface ToastContextProps {
   showToast: (message: string) => void;
