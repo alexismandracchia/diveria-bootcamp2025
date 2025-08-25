@@ -17,7 +17,7 @@ export default function LoginForm () {
   const [isActive, setIsActive] = useState(false);
   const canvasRef = useRef(null);
 
-  // ⬇️ Redirección SOLO en efecto (no durante el render)
+  //Redirección SOLO en efecto (no durante el render)
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/', { replace: true });

@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
+import '../assets/styles.css'
 
 const PLACEHOLDER =
   'https://via.placeholder.com/800x500.png?text=Sin+imagen'
@@ -8,10 +9,10 @@ const PLACEHOLDER =
 export default function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
-  const { fetchProductById, items } = useApp()
+  const { fetchProductById, items, isAuthenticated } = useApp()
 
   const [data, setData] = useState(null)
-  const [status, setStatus] = useState('loading') // loading | ready | error
+  const [status, setStatus] = useState('loading')
   const [localOnly, setLocalOnly] = useState(false)
   const [imgSrc, setImgSrc] = useState(PLACEHOLDER)
 
@@ -30,7 +31,7 @@ export default function ProductDetail() {
       })
       .catch(() => {
         if (!mounted) return
-        // Si el server no lo tiene, intento con el estado local (p.ej. creado)
+        // Si el server no lo tiene, intento con el estado local
         const local = items.find(p => String(p.id) === String(id))
         if (local) {
           setData(local)
@@ -39,7 +40,7 @@ export default function ProductDetail() {
           setStatus('ready')
         } else {
           setStatus('error')
-          // Redirigimos suave a la lista para no dejar pantalla vacía
+          // Redirigimos a la lista para no dejar pantalla vacía
           navigate('/', { replace: true, state: { notFound: true } })
         }
       })
@@ -50,8 +51,14 @@ export default function ProductDetail() {
   if (status === 'loading') return <div className="py-5 text-center">Cargando...</div>
   if (!data) return null
 
+  const containerStyle = {
+    minHeight: 'calc(100vh - 185px)',
+    display: 'flex',
+    alignItems: 'center'
+  }
+
   return (
-    <div className="container justify-content-center mt-3 shadow p-5">
+    <div style={containerStyle} className="container justify-content-center mt-3 shadow p-5 mb-4">
       <div className="row g-4">
         <div className="col-12 col-md-6">
           <img
@@ -83,7 +90,9 @@ export default function ProductDetail() {
           </div>
 
           <div className="mt-4 d-flex gap-2">
-            <Link className="btn btn-outline-secondary" to={`/edit/${data.id}`}>Editar</Link>
+            {isAuthenticated && (
+              <Link className="btn btn-outline-secondary" to={`/edit/${data.id}`}>Editar</Link>
+            )}
             <Link className="btn btn-outline-dark" to="/">Volver</Link>
           </div>
         </div>

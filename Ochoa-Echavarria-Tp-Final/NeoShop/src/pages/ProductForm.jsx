@@ -1,4 +1,3 @@
-// src/pages/ProductForm.jsx
 import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
@@ -56,11 +55,11 @@ export default function ProductForm() {
 
     try {
       if (isEdit) {
-        await updateItem(Number(id), payload)   // 👈 actualiza estado global
+        await updateItem(Number(id), payload)   //actualiza estado global
       } else {
-        await addItem(payload)                  // 👈 agrega al estado global
+        await addItem(payload)                  //agrega al estado global
       }
-      navigate('/')                             // 👈 volvemos a la lista (que NO se pisa por el “salto”)
+      navigate('/')                             //volvemos a la lista (que NO se pisa por el “salto”)
     } finally {
       setSaving(false)
     }
@@ -68,8 +67,14 @@ export default function ProductForm() {
 
   const onChange = (e) => setValues(v => ({ ...v, [e.target.name]: e.target.value }))
 
+  const containerStyle = {
+    minHeight: 'calc(100vh - 185px)',
+    display: 'flex',
+    alignItems: 'center'
+  }
+
   return (
-    <div className="container mt-3">
+    <div style={containerStyle} className="container mt-3 mb-4">
       <div className="card shadow-sm">
         <div className="card-body">
           <h4 className="mb-3">{isEdit ? 'Editar producto' : 'Crear producto'}</h4>

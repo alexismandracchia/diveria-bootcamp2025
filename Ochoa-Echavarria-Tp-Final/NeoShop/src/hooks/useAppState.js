@@ -12,11 +12,18 @@ export default function useAppState() {
   })
 
   // --- Estado de productos/UI ---
-  const [items, setItems] = useState([])
-  const [total, setTotal] = useState(0)
+  const [items, setItems] = useState([]) // ← Datos COMPLETOS de API
+  const [filteredItems, setFilteredItems] = useState([]) // ← Datos FILTRADOS para UI
+  const [total, setTotal] = useState(0) // ← Total de la API (sin filtros)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(12)
   const [query, setQuery] = useState('')
+  const [filters, setFilters] = useState({
+    category: null,
+    brand: null,
+    priceRange: null,
+    minRating: null
+  })
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
 
@@ -40,6 +47,7 @@ export default function useAppState() {
 
         if (storedProducts.length > 0) {
           setItems(storedProducts)
+          setFilteredItems(storedProducts)
           setTotal(storedTotal)
           setUseLocalData(true)
         } else {
@@ -62,7 +70,7 @@ export default function useAppState() {
     }
   }, [items, total, useLocalData])
 
-  // Auth simulada
+  // Auth
   const DEMO = { email: 'admin@bootcamp.com', password: 'password', name: 'User' }
 
   const loginUser = useCallback(async (email, password) => {
@@ -85,7 +93,7 @@ export default function useAppState() {
     return res.json()
   }
 
-  //Listado con paginación/búsqueda - Versión corregida
+  //Listado con paginación/búsqueda
   const fetchItems = useCallback(async () => {
     if (skipNextFetch) {
       setSkipNextFetch(false)
@@ -118,6 +126,7 @@ export default function useAppState() {
 
       const data = await fetchJson(url, { signal: abortRef.current.signal })
       setItems(data.products || [])
+      setFilteredItems(data.products || [])
       setTotal(data.total || 0)
 
     } catch (e) {
@@ -130,7 +139,7 @@ export default function useAppState() {
     }
   }, [page, limit, query, skipNextFetch, useLocalData])
 
-  // seEffect para fetch automático - Versión corregida
+  // seEffect para fetch automático
   useEffect(() => {
     fetchItems()
   }, [page, limit, query, fetchItems])
@@ -147,7 +156,7 @@ export default function useAppState() {
     setLimit(newLimit)
     setPage(1)
     setSkipNextFetch(false)
-    setUseLocalData(false) // Forzar modo API
+    setUseLocalData(false)
   }, [])
 
   const changeQuery = useCallback((newQuery) => {
@@ -165,7 +174,7 @@ export default function useAppState() {
       const localItem = items.find(item => item.id === Number(id))
       if (localItem) return localItem
 
-      // Si no está en local, buscar en la API
+      // Si no buscar en la API
       return await fetchJson(`${API}/products/${Number(id)}`)
     } catch (e) {
       setError(e.message)
@@ -176,7 +185,7 @@ export default function useAppState() {
   }, [items])
 
   const addItem = useCallback(async (newItem) => {
-    // Crear un nuevo producto con ID único
+    // Crear un nuevo producto
     const created = {
       ...newItem,
       id: -Date.now(),
@@ -185,6 +194,7 @@ export default function useAppState() {
 
     // Actualizar estado local
     setItems(prev => [created, ...prev])
+    setFilteredItems(prev => [created, ...prev])
     setTotal(t => t + 1)
     setUseLocalData(true)
     setSkipNextFetch(true) // Evitar fetch automático
@@ -201,8 +211,13 @@ export default function useAppState() {
         ? { ...p, ...updatedData, isModified: true }
         : p
     ))
+    setFilteredItems(prev => prev.map(p =>
+      Number(p.id) === targetId
+        ? { ...p, ...updatedData, isModified: true }
+        : p
+    ))
     setUseLocalData(true)
-    setSkipNextFetch(true) // Evitar fetch automático
+    setSkipNextFetch(true)
 
     return { id: targetId, ...updatedData }
   }, [])
@@ -212,9 +227,10 @@ export default function useAppState() {
 
     // Eliminación del estado local
     setItems(prev => prev.filter(p => Number(p.id) !== targetId))
+    setFilteredItems(prev => prev.filter(p => Number(p.id) !== targetId))
     setTotal(t => Math.max(0, t - 1))
     setUseLocalData(true)
-    setSkipNextFetch(true) // Evitar fetch automático
+    setSkipNextFetch(true)
   }, [])
 
   // Función para resetear y volver a cargar desde la API
@@ -223,28 +239,112 @@ export default function useAppState() {
     localStorage.removeItem('productsTotal')
     setUseLocalData(false)
     setItems([])
+    setFilteredItems([])
     setTotal(0)
     setSkipNextFetch(false)
     fetchItems()
   }, [fetchItems])
 
+  // Función para aplicar filtros
+  const applyFilters = useCallback((products, filters, searchQuery) => {
+    let filtered = [...products];
+
+    // Filtro por texto de búsqueda
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(product => {
+        // Verificar y convertir cada campo a string antes de usar toLowerCase()
+        const title = product.title ? product.title.toString().toLowerCase() : '';
+        const description = product.description ? product.description.toString().toLowerCase() : '';
+        const category = product.category ? product.category.toString().toLowerCase() : '';
+        const brand = product.brand ? product.brand.toString().toLowerCase() : '';
+
+        return (
+          title.includes(query) ||
+          description.includes(query) ||
+          category.includes(query) ||
+          brand.includes(query)
+        );
+      });
+    }
+
+    // Filtros (con verificación de null/undefined)
+
+    if (filters.category) {
+      filtered = filtered.filter(product =>
+        product.category && product.category === filters.category
+      );
+    }
+
+    if (filters.brand) {
+      filtered = filtered.filter(product =>
+        product.brand && product.brand === filters.brand
+      );
+    }
+
+    if (filters.priceRange) {
+      filtered = filtered.filter(product =>
+        product.price != null &&
+        product.price >= filters.priceRange[0] &&
+        product.price <= filters.priceRange[1]
+      );
+    }
+
+    if (filters.minRating) {
+      filtered = filtered.filter(product =>
+        product.rating != null &&
+        product.rating >= filters.minRating
+      );
+    }
+
+    return filtered;
+  }, []);
+
+  // Para aplicar filtros cuando cambian
+  useEffect(() => {
+    if (items.length > 0) {
+      if (useLocalData || query || Object.values(filters).some(val => val !== null)) {
+        // Aplicar filtros solo en modo local o cuando hay búsqueda/filtros activos
+        const filtered = applyFilters(items, filters, query);
+        setFilteredItems(filtered);
+        // Mantener el total original para paginación
+      } else {
+        // En modo API sin filtros, usar items directamente
+        setFilteredItems(items);
+      }
+    }
+  }, [items, filters, query, applyFilters, useLocalData])
+
+  // Limpiar filtros
+  const clearFilters = useCallback(() => {
+    setFilters({
+      category: null,
+      brand: null,
+      priceRange: null,
+      minRating: null
+    });
+    setQuery('');
+  }, []);
+
   return useMemo(() => ({
     isAuthenticated,
     user,
-    items,
+    items: filteredItems,
     total,
     page,
     limit,
     query,
+    filters,
     loading,
     error,
     useLocalData,
     skipNextFetch,
 
-    // setters UI - usar las versiones mejoradas
+    // setters UI
     setPage: changePage,
     setLimit: changeLimit,
     setQuery: changeQuery,
+    setFilters,
     setSkipNextFetch,
 
     // auth
@@ -258,6 +358,7 @@ export default function useAppState() {
     updateItem,
     deleteItem,
     resetToAPIData,
+    clearFilters,
 
     // función adicional para forzar fetch
     refreshData: () => {
@@ -287,6 +388,8 @@ export default function useAppState() {
     addItem,
     updateItem,
     deleteItem,
-    resetToAPIData
+    resetToAPIData,
+    filters,
+    clearFilters
   ])
 }
