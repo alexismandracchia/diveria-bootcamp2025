@@ -29,7 +29,6 @@ export class ProductService extends BaseService {
 
   async getProductById(id: number): Promise<Product> {
     const response = await this.http.get<Product>(`${PATH.PRODUCTS}/${id}`);
-    console.log(response.data);
     return response.data;
   }
 
