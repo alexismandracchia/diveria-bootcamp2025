@@ -8,9 +8,7 @@ export default function PrivateLayout({ children }: { children: ReactNode }) {
   const { isAuthenticated, isAuthLoading } = useRouteGuard("private");
 
   if (isAuthLoading || !isAuthenticated) {
-    return (
-      <FullScreenLoader message="Redirigiendo..."/>
-    ); 
+    return <FullScreenLoader message="Redirigiendo..." />;
   }
 
   return <>{children}</>;
