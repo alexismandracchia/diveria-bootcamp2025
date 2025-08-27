@@ -2,11 +2,14 @@ import { BaseService } from "./BaseService";
 import { PATH } from "@/lib/common";
 
 export interface Product {
-  id?: number;
+  id: number; 
   title: string;
-  description?: string;
-  price?: number;
-  category?: string;
+  description: string;
+  price: number; 
+  category: string;
+  stock: number;
+  availabilityStatus: string;
+  images?: string[];
 }
 
 export interface ApiPagination<T> {
