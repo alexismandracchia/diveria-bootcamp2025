@@ -170,15 +170,14 @@ export default function useAppState() {
     setLoading(true)
     setError(null)
     try {
-      // Primero buscar en los items locales
+      // Siempre intentar obtener de la API primero para datos completos
+      const apiProduct = await fetchJson(`${API}/products/${Number(id)}`)
+      return apiProduct
+    } catch (apiError) {
+      // Si falla la API, buscar en items locales
       const localItem = items.find(item => item.id === Number(id))
       if (localItem) return localItem
-
-      // Si no buscar en la API
-      return await fetchJson(`${API}/products/${Number(id)}`)
-    } catch (e) {
-      setError(e.message)
-      throw e
+      throw apiError
     } finally {
       setLoading(false)
     }

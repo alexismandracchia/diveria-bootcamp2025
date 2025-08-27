@@ -22,6 +22,7 @@ export default function Products() {
   }, [page, limit, query, skipNextFetch]);
 
   return (
+    
     <div className="container mt-3">
       <div className="row">
         <div className="col-lg-3 d-none d-lg-block">
