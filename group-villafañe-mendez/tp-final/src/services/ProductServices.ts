@@ -6,9 +6,9 @@ export interface Product {
   title: string;
   description: string;
   price: number; 
-  category: string;
-  stock: number;
-  availabilityStatus: string;
+  category?: string;           /* <-- dejo "?" provisional  */
+  stock?: number;              /* <-- dejo "?" provisional  */
+  availabilityStatus?: string; /* <-- dejo "?" provisional  */
   images?: string[];
 }
 
@@ -32,7 +32,6 @@ export class ProductService extends BaseService {
 
   async getProductById(id: number): Promise<Product> {
     const response = await this.http.get<Product>(`${PATH.PRODUCTS}/${id}`);
-    console.log(response.data);
     return response.data;
   }
 

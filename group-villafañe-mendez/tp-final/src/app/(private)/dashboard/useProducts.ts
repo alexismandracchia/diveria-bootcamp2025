@@ -56,5 +56,6 @@ export const useProducts = () => {
     loading,
     error,
     setPageNumber, 
+    refetch: () => fetchProducts(pageNumber),
   };
 };
