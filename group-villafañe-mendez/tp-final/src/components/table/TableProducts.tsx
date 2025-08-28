@@ -2,17 +2,18 @@
 import React from "react";
 import ProductTableRow, { ProductRow } from "./components/ProductTableRow";
 import ProductTablePagination from "../pagination/Pagination";
+import { Product } from "@/services/ProductServices";
 
 export type { ProductRow };
 
 export interface TableProductsProps {
-  products: ProductRow[];
+  products: (Product | ProductRow)[];
   total?: number;
   page?: number;
   pageSize?: number;
   onPageChange?: (newPage: number) => void;
-  onEdit?: (id: number) => void;
-  onRemove?: (id: number) => void;
+  onEdit?: (product: ProductRow) => void;
+  onRemove?: (product: ProductRow) => void;
 }
 
 const TableProducts: React.FC<TableProductsProps> = ({
@@ -45,8 +46,8 @@ const TableProducts: React.FC<TableProductsProps> = ({
               <ProductTableRow
                 key={product.id}
                 product={product}
-                onEdit={onEdit}
-                onRemove={onRemove}
+                onEdit={() => onEdit?.(product)}
+                onRemove={() => onRemove?.(product)}
               />
             ))}
           </tbody>

@@ -2,8 +2,10 @@
 import { createContext, useContext, useState, ReactNode } from "react";
 import { Toasts } from "@/components/toasts/Toasts";
 
+export type ToastType = "error" | "success";
+
 interface ToastContextProps {
-  showToast: (message: string) => void;
+  showToast: (message: string, type?: ToastType) => void;
 }
 
 const ToastContext = createContext<ToastContextProps | undefined>(undefined);
@@ -11,9 +13,11 @@ const ToastContext = createContext<ToastContextProps | undefined>(undefined);
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
   const [toast, setToast] = useState<string | null>(null);
   const [visible, setVisible] = useState(false);
+  const [type, setType] = useState<ToastType>("error");
 
-  const showToast = (message: string) => {
+  const showToast = (message: string, toastType: ToastType = "error") => {
     setToast(message);
+    setType(toastType);
     setVisible(true);
     setTimeout(() => setVisible(false), 5000);
   };
@@ -21,7 +25,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <Toasts message={toast} visible={visible} />
+      <Toasts message={toast} visible={visible} type={type} />
     </ToastContext.Provider>
   );
 };

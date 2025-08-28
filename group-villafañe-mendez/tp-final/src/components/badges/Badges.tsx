@@ -6,7 +6,7 @@ export interface BadgeProps {
 
 export function Badge({ textDanger, textWarning, textSuccess }: BadgeProps) {
   const baseClasses =
-    "text-xs font-medium me-2 px-2.5 py-0.5 rounded-sm dark:bg-gray-700 border";
+    "inline-block text-xs sm:text-sm font-medium px-2 sm:px-3 py-0.5 rounded-md border truncate";
 
   let colorClasses = "";
   let text = "";
@@ -16,17 +16,24 @@ export function Badge({ textDanger, textWarning, textSuccess }: BadgeProps) {
     text = textDanger;
   } else if (textWarning) {
     colorClasses =
-      "bg-yellow-100 text-yellow-800 dark:text-yellow-300 border-yellow-300";
+      "text-yellow-800 dark:text-yellow-300 border-yellow-300";
     text = textWarning;
   } else if (textSuccess) {
     colorClasses =
-      "bg-green-100 text-green-800 dark:text-green-400 border-green-400";
+      "text-green-800 dark:text-green-400 border-green-400";
     text = textSuccess;
   } else {
     colorClasses =
-      "bg-blue-100 text-blue-800 dark:text-blue-400 border-blue-400";
+      "text-blue-800 dark:text-blue-400 border-blue-400";
     text = "Default";
   }
 
-  return <span className={`${baseClasses} ${colorClasses}`}>{text}</span>;
+  return (
+    <span
+      className={`${baseClasses} ${colorClasses} max-w-full sm:max-w-xs`}
+      title={text} 
+    >
+      {text}
+    </span>
+  );
 }

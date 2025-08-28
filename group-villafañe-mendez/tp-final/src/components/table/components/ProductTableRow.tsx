@@ -1,4 +1,4 @@
-import React, { useCallback } from "react";
+import React from "react";
 import Image from "next/image";
 import { Badge, BadgeProps } from "../../badges/Badges";
 import { GradientButton } from "../../buttons/Buttons";
@@ -9,18 +9,18 @@ export interface ProductRow {
   id: number;
   title: string;
   price: number;
-  stock: number;
-  status: string;
+  stock?: number;
+  status?: string;
   thumbnail?: string;
 }
 
 interface ProductTableRowProps {
   product: ProductRow;
-  onEdit?: (id: number) => void;
-  onRemove?: (id: number) => void;
+  onEdit?: () => void;
+  onRemove?: () => void;
 }
 
-const getBadgeProps = (status: string): BadgeProps => {
+const getBadgeProps = (status?: string): BadgeProps => {
   switch (status) {
     case "In Stock":
       return { textSuccess: status };
@@ -38,14 +38,6 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
   onEdit,
   onRemove,
 }) => {
-
-  const handleEdit = useCallback(() => {
-    if (onEdit) onEdit(product.id);
-  }, [product.id, onEdit]);
-
-  const handleRemove = useCallback(() => {
-    if (onRemove) onRemove(product.id);
-  }, [product.id, onRemove]);
 
   return (
     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
@@ -72,7 +64,7 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
       <td className="px-6 py-4">
         <div className="flex gap-1">
           <GradientButton
-            onClick={handleEdit}
+            onClick={onEdit}
             className="p-2"
             colorFrom="from-green-500"
             colorVia="via-green-600"
@@ -83,7 +75,7 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
             <FaEdit />
           </GradientButton>
           <GradientButton
-            onClick={handleRemove}
+            onClick={onRemove} 
             className="p-2"
             colorFrom="from-red-500"
             colorVia="via-red-600"
