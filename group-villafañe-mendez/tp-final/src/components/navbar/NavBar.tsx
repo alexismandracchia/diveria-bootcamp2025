@@ -7,9 +7,9 @@ import { useAuth } from "@/context/AuthProvider";
 import { BiLogOut } from "react-icons/bi";
 
 type NavLink = { href: string; label: React.ReactNode; onClick?: () => void; };
-const baseLinks: NavLink[] = [ { href: "/", label: "Inicio" }];
-const guestLinks: NavLink[] = [ { href: "/login", label: "Inicia sesion" } ];
-const authLinks: NavLink[] = [ { href: "/dashboard", label: "Panel de control" } ];
+const baseLinks: NavLink[] = [ { href: "/", label: "Home" }];
+const guestLinks: NavLink[] = [ { href: "/login", label: "Sign In" } ];
+const authLinks: NavLink[] = [ { href: "/dashboard", label: "Dashboard" } ];
 
 interface NavProps { links: NavLink[]; onLinkClick?: () => void; }
 

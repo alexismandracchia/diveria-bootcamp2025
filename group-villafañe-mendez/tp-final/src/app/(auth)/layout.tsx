@@ -12,7 +12,7 @@ export default function PublicLayout({
 
   if (isAuthLoading || isAuthenticated) {
     return (
-      <FullScreenLoader message="Redirigiendo..."/>
+      <FullScreenLoader message="Redirecting..."/>
     );
   }
 

@@ -3,13 +3,18 @@
 import type { ReactNode } from "react";
 import { useRouteGuard } from "@/hooks/useRouteGuard";
 import FullScreenLoader from "@/components/loaders/FullScreenLoader";
+import { ProductProvider } from "./dashboard/components/ProductContext";
 
 export default function PrivateLayout({ children }: { children: ReactNode }) {
   const { isAuthenticated, isAuthLoading } = useRouteGuard("private");
 
   if (isAuthLoading || !isAuthenticated) {
-    return <FullScreenLoader message="Redirigiendo..." />;
+    return <FullScreenLoader message="Redirecting..." />;
   }
 
-  return <>{children}</>;
+  return (
+    <>
+      <ProductProvider>{children}</ProductProvider>
+    </>
+  );
 }

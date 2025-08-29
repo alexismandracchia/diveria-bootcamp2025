@@ -1,25 +1,20 @@
 import React from "react";
-import { PrimaryLinkButton, SecondaryLinkButton } from "../buttons/Links";
-import { FaArrowRight } from "react-icons/fa";
-import { PATH } from "@/lib/common";
+import { SecondaryLinkButton } from "../buttons/Links";
 
 const HeroSection = () => {
   return (
     <section className="flex bg-center bg-no-repeat bg-fixed bg-[url('https://flowbite.s3.amazonaws.com/docs/jumbotron/conference.jpg')] bg-gray-700 bg-blend-multiply h-dvh items-center">
       <div className="px-4 mx-auto max-w-screen-xl text-center py-24 lg:py-56">
         <h1 className="mb-4 text-4xl font-extrabold tracking-tight leading-none text-white md:text-5xl lg:text-6xl">
-          We invest in the world’s potential
+          Discover the Best Deals
         </h1>
         <p className="mb-8 text-lg font-normal text-gray-300 lg:text-xl sm:px-16 lg:px-48">
-          Here at Flowbite we focus on markets where technology, innovation, and
-          capital can unlock long-term value and drive economic growth.
+          Shop the latest products with unbeatable prices and quality you can trust.
         </p>
-        <div className="flex flex-col space-y-4 sm:flex-row sm:justify-center sm:space-y-0">
-          <PrimaryLinkButton href={PATH.LOGIN}>
-            Inicia Sesion
-            <FaArrowRight className="ms-2" />
-          </PrimaryLinkButton>
-          <SecondaryLinkButton href="#about">Sobre nosotros</SecondaryLinkButton>
+        <div className="flex justify-center">
+          <SecondaryLinkButton href="#about">
+            Shop Now
+          </SecondaryLinkButton>
         </div>
       </div>
     </section>
