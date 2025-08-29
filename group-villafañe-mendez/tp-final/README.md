@@ -1,70 +1,125 @@
-# TP FINAL – Proyecto Next.js + Tailwind CSS + Flowbite
+# TP FINAL – Proyecto E-commerce con Next.js + Tailwind CSS + Flowbite
 
 ## Descripción
 
-Este proyecto avanzado los desafiará a construir una Single-Page Application (SPA) robusta y 
-escalable, aplicando patrones de desarrollo y herramientas que se utilizan en entornos 
-profesionales. Crear una aplicación web utilizando React que permita aplicar y consolidad los 
-conceptos vistos. 
+Este proyecto es una **Single-Page Application (SPA)** de e-commerce construida con **Next.js**, **TypeScript** y **Tailwind CSS**, diseñada para practicar y aplicar patrones de desarrollo profesional.
 
-- **Next.js** como framework de React para SSR y SSG.  
-- **Tailwind CSS** para estilos modernos y responsivos.  
-- **Flowbite** para componentes UI listos (botones, cards, modales, etc.).  
-- **Axios** para realizar peticiones HTTP de forma sencilla y eficiente.  
-- **Google Fonts Roboto** como tipografía principal.  
-- **TypeScript** para tipado estático y mayor seguridad de código.  
+Incluye:
 
-El proyecto está estructurado siguiendo buenas prácticas de Next.js con **App Router** y `src/` para organizar el código.
+- Páginas de **login** y **dashboard** privadas
+- Gestión de productos con **CRUD**
+- Visualización de detalles de productos
+- **Dark mode** compatible
+- Componentes **reutilizables y modulares**
 
-🔗 Recursos útiles
-
-[Documentación Next.js](https://nextjs.org/docs)
-
-[Documentación Tailwind CSS](https://tailwindcss.com/docs)
-
-[Documentación Flowbite](https://flowbite.com/docs/getting-started/quickstart/)
-
-[Axios GitHub](https://axios-http.com/docs/intro)
+El proyecto sigue buenas prácticas de Next.js con **App Router** y la estructura `src/` para mantener el código organizado.
 
 ---
 
-## Requisitos
+## Tecnologías y herramientas
 
-- **Node.js** v18 o superior  
-- **npm** v9 o superior
-
----
-
-## Estructura de projecto
-
-tp-final/
-├─ node_modules/
-├─ public/              # Archivos estáticos (imágenes, SVGs)
-├─ src/
-│  ├─ app/
-│  │  ├─ page.tsx       # Página principal
-│  │  └─ layout.tsx     # Layout principal
-│  ├─ components/       # Componentes reutilizables
-│  └─ styles/
-│     └─ globals.css    # CSS global con Tailwind
-├─ package.json
-├─ tailwind.config.js
-├─ postcss.config.mjs
-├─ tsconfig.json
-└─ README.md
+- **Next.js 15** – SSR, SSG y App Router
+- **React 19** – Librería principal de UI
+- **Tailwind CSS 4** – Estilos responsivos y modernos
+- **Flowbite y Flowbite React** – Componentes UI listos
+- **Axios** – Peticiones HTTP
+- **TypeScript 5** – Tipado estático
+- **React Icons** – Íconos vectoriales
+- **Google Fonts** – Roboto
 
 ---
 
 ## Instalación
 
-1. Instalar dependencias:
-
 npm install
 
----
 
-## Scripts disponibles
+## Ejecucion
+(La aplicación se ejecutará en http://localhost:3000.)
 
-npm run dev       # Inicia el servidor de desarrollo en http://localhost:3000
-npm run build     # Genera la versión de producción
-npm run start     # Inicia la app en producción
+| Script          | Descripción                      |
+| --------------- | -------------------------------- |
+| `npm run dev`   | Inicia el servidor de desarrollo |
+| `npm run build` | Genera la versión de producción  |
+| `npm run start` | Inicia la app en producción      |
+
+
+## Credenciales de prueba
+
+Usuario: test@test.com
+
+Contraseña: Test1234!
+
+Estas credenciales permiten acceder a las rutas privadas como el dashboard y la gestión de productos.
+
+
+## Estructura de carpetas
+
+src/
+├─ api/
+│  └─ AxiosInstance.tsx          # Configuración de Axios
+├─ app/
+│  ├─ (auth)/login/             # Login
+│  │  ├─ components/            # FormLogin, ParallaxBackground
+│  │  ├─ page.tsx
+│  │  └─ layout.tsx
+│  ├─ (private)/dashboard/      # Dashboard protegido
+│  │  ├─ components/            # ProductContext, ProductManagement
+│  │  ├─ page.tsx
+│  │  ├─ useProducts.ts
+│  │  └─ useProductsActions.ts
+│  ├─ products/[id]/            # Detalle de producto
+│  │  ├─ page.tsx
+│  │  └─ layout.tsx
+│  ├─ globals.css
+│  ├─ layout.tsx
+│  └─ not-found.tsx
+├─ components/
+│  ├─ badges/                   # Badge reusable
+│  ├─ buttons/                  # GradientButton, Links
+│  ├─ error/                    # FullScreenErrors
+│  ├─ inputs/                   # Inputs reutilizables
+│  ├─ loaders/                  # FullScreenLoader
+│  ├─ modal/                    # ProductFormModal, DeleteProductModal
+│  ├─ navbar/                   # DesktopNav, MobileNav, NavBar
+│  ├─ pagination/               # Pagination
+│  ├─ sections/                 # HeroSection, AboutSection
+│  ├─ table/                    # ProductTableRow, TableProducts
+│  └─ toasts/                   # Toasts
+├─ context/                      # AuthProvider, ToastContext
+├─ hooks/                        # useParallax, useRouteGuard, useScroll
+├─ lib/                          # Validators, utils comunes
+└─ services/                     # BaseService, ProductServices
+
+
+## Descripción de componentes clave
+
+- **HeroSection / AboutSection:**  
+  Componentes de la página principal, responsive y estilizados.
+
+- **ProductTableRow / TableProducts:**  
+  Tabla para gestión de productos.
+
+- **ProductDetailPage:**  
+  Detalle de producto con imágenes, stock y precios.
+
+- **ShadowButton / GradientButton / Links:**  
+  Botones reutilizables con estilos y efectos.
+
+- **FullScreenLoader / FullScreenError:**  
+  Indicadores de carga y manejo de errores.
+
+- **Modal Components:**  
+  Formulario de producto y confirmación de eliminación.
+
+- **Navbar Components:**  
+  Menú responsive con control de links según autenticación.
+
+
+## Recursos útiles
+
+- [Next.js Documentation](https://nextjs.org/docs)
+- [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+- [Flowbite Docs](https://flowbite.com/docs/)
+- [Axios Docs](https://axios-http.com/docs/intro)
+

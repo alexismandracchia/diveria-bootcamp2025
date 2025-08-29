@@ -4,6 +4,7 @@ import { Badge, BadgeProps } from "../../badges/Badges";
 import { GradientButton } from "../../buttons/Buttons";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
+import Link from "next/link";
 
 export interface ProductRow {
   id: number;
@@ -38,7 +39,6 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
   onEdit,
   onRemove,
 }) => {
-
   return (
     <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
       <td className="p-4">
@@ -52,7 +52,7 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
         )}
       </td>
       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
-        {product.title}
+        <Link href={`/products/${product.id}`}>{product.title}</Link>
       </td>
       <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
         ${product.price}
@@ -75,7 +75,7 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
             <FaEdit />
           </GradientButton>
           <GradientButton
-            onClick={onRemove} 
+            onClick={onRemove}
             className="p-2"
             colorFrom="from-red-500"
             colorVia="via-red-600"
