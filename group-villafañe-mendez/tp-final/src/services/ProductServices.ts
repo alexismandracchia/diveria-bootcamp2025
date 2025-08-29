@@ -2,11 +2,46 @@ import { BaseService } from "./BaseService";
 import { PATH } from "@/lib/common";
 
 export interface Product {
-  id?: number;
+  id: number; 
   title: string;
-  description?: string;
-  price?: number;
-  category?: string;
+  description: string;
+  price: number; 
+  category?: string;           /* <-- dejo "?" provisional  */
+  stock: number;              /* <-- dejo "?" provisional  */
+  availabilityStatus?: string; /* <-- dejo "?" provisional  */
+  images?: string[];
+}
+
+export interface ProductDetail extends Product {
+  discountPercentage: number;
+  rating: number;
+  tags: string[];
+  brand: string;
+  sku: string;
+  weight: number;
+  dimensions: {
+    width: number;
+    height: number;
+    depth: number;
+  };
+  warrantyInformation: string;
+  shippingInformation: string;
+  reviews: {
+    rating: number;
+    comment: string;
+    date: string;
+    reviewerName: string;
+    reviewerEmail: string;
+  }[];
+  returnPolicy: string;
+  minimumOrderQuantity: number;
+  meta: {
+    createdAt: string;
+    updatedAt: string;
+    barcode: string;
+    qrCode: string;
+  };
+  thumbnail: string;
 }
 
 export interface ApiPagination<T> {
@@ -27,9 +62,9 @@ export class ProductService extends BaseService {
     return response.data;
   }
 
-  async getProductById(id: number): Promise<Product> {
-    const response = await this.http.get<Product>(`${PATH.PRODUCTS}/${id}`);
-    console.log(response.data);
+  async getProductById(id: number): Promise<ProductDetail> {
+    const response = await this.http.get<ProductDetail>(`${PATH.PRODUCTS}/${id}`);
+    console.log(response)
     return response.data;
   }
 

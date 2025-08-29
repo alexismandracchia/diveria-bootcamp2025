@@ -1,27 +1,32 @@
 "use client";
 import React from "react";
+import { MdErrorOutline, MdCheckCircleOutline } from "react-icons/md";
 
 interface ToastProps {
   message: string | null;
   visible: boolean;
+  type?: "error" | "success";
 }
-import { MdErrorOutline } from "react-icons/md";
 
-export const Toasts = ({ message, visible }: ToastProps) => {
+export const Toasts = ({ message, visible, type = "error" }: ToastProps) => {
   if (!message) return null;
+
+  const bgColor = type === "success" ? "bg-green-600" : "bg-red-900";
+  const Icon = type === "success" ? MdCheckCircleOutline : MdErrorOutline;
+  const title = type === "success" ? "Success:" : "Error:";
 
   return (
     <div
       className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col items-center p-3 sm:p-4 max-w-xs sm:max-w-sm
       text-sm sm:text-base text-white 
-      bg-red-900 rounded-lg shadow-lg 
+      ${bgColor} rounded-lg shadow-lg 
       space-y-2
       transition-all duration-500 ease-in-out
       ${visible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`}
     >
-      <MdErrorOutline size={24} />
+      <Icon size={24} />
       <div className="break-words text-center">
-        <span className="font-medium">Error:</span> {message}
+        <span className="font-medium">{title}</span> {message}
       </div>
     </div>
   );

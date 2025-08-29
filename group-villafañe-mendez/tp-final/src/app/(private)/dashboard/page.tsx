@@ -1,8 +1,7 @@
+import ProductManagement from "./components/ProductManagement";
 
-const page = () => {
-  return (
-    <div>Dashboard</div>
-  )
-}
+const ProductsPage = () => {
+  return <ProductManagement />;
+};
 
-export default page;
+export default ProductsPage;

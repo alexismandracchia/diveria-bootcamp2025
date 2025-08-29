@@ -12,7 +12,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const auth = useAuthState();
   if (auth.isAuthLoading) {
     return (
-      <FullScreenLoader message="Verificando sesion..."/>
+      <FullScreenLoader message="Verifying session..."/>
     );
   }
   return <AuthContext.Provider value={auth}>{children}</AuthContext.Provider>;
