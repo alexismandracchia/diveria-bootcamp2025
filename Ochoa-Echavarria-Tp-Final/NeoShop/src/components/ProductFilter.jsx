@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { useApp } from '../context/AppContext';
 
 export default function ProductFilters() {
@@ -13,28 +13,38 @@ export default function ProductFilters() {
 
     const [categories, setCategories] = useState([]);
     const [brands, setBrands] = useState([]);
-    const [priceRange, setPriceRange] = useState([0, 1000]);
+    const [maxProductPrice, setMaxProductPrice] = useState(1000);
 
-    // Extraer categorías y marcas únicas de los productos
     useEffect(() => {
         if (items.length > 0) {
-            const uniqueCategories = [...new Set(items.map(item => item.category))].filter(Boolean);
-            const uniqueBrands = [...new Set(items.map(item => item.brand))].filter(Boolean);
-            const maxPrice = Math.max(...items.map(item => item.price), 1000);
+            const calculatedMaxPrice = Math.max(...items.map(item => item.price), 1000);
+            setMaxProductPrice(calculatedMaxPrice);
 
-            setCategories(uniqueCategories);
-            setBrands(uniqueBrands);
-            setPriceRange([0, maxPrice]);
-
-            // Inicializar el rango de precios en los filtros si no está establecido
             if (!filters.priceRange) {
                 setFilters(prev => ({
                     ...prev,
-                    priceRange: [0, maxPrice]
+                    priceRange: [0, calculatedMaxPrice]
                 }));
             }
         }
     }, [items]);
+
+    useEffect(() => {
+        if (items.length > 0) {
+            const uniqueCategories = [...new Set(items.map(item => item.category))].filter(Boolean);
+            const uniqueBrands = [...new Set(items.map(item => item.brand))].filter(Boolean);
+            setCategories(uniqueCategories);
+            setBrands(uniqueBrands);
+        }
+    }, [items]);
+
+    const currentMinPrice = useMemo(() => {
+        return filters.priceRange?.[0] || 0;
+    }, [filters.priceRange]);
+
+    const currentMaxPrice = useMemo(() => {
+        return filters.priceRange?.[1] || maxProductPrice;
+    }, [filters.priceRange, maxProductPrice]);
 
     const handleCategoryChange = (category) => {
         setFilters(prev => ({
@@ -43,10 +53,21 @@ export default function ProductFilters() {
         }));
     };
 
-    const handlePriceChange = (min, max) => {
+    const handleMinPriceChange = (e) => {
+        const newMin = parseInt(e.target.value);
+        const newMax = Math.max(newMin, currentMaxPrice);
         setFilters(prev => ({
             ...prev,
-            priceRange: [min, max]
+            priceRange: [newMin, newMax]
+        }));
+    };
+
+    const handleMaxPriceChange = (e) => {
+        const newMax = parseInt(e.target.value);
+        const newMin = Math.min(currentMinPrice, newMax);
+        setFilters(prev => ({
+            ...prev,
+            priceRange: [newMin, newMax]
         }));
     };
 
@@ -57,6 +78,14 @@ export default function ProductFilters() {
         }));
     };
 
+    const clearAllFilters = () => {
+        clearFilters();
+        setFilters(prev => ({
+            ...prev,
+            priceRange: [0, maxProductPrice]
+        }));
+    };
+
     return (
         <div className="card shadow-sm mb-4">
             <div className="card-body">
@@ -64,7 +93,7 @@ export default function ProductFilters() {
                     <h5 className="card-title mb-0">Filtros</h5>
                     <button
                         className="btn btn-sm btn-outline-secondary"
-                        onClick={clearFilters}
+                        onClick={clearAllFilters}
                     >
                         Limpiar
                     </button>
@@ -83,36 +112,44 @@ export default function ProductFilters() {
                 </div>
 
                 <div className="mb-3">
-                    <label className="form-label">Precio: ${filters.priceRange?.[0] || 0} - ${filters.priceRange?.[1] || 1000}</label>
+                    <label className="form-label">Precio: ${currentMinPrice} - ${currentMaxPrice}</label>
                     <div className="d-flex align-items-center">
                         <input
                             type="range"
                             className="form-range"
                             min="0"
-                            max={priceRange[1]}
-                            value={filters.priceRange?.[0] || 0}
-                            onChange={(e) => handlePriceChange(parseInt(e.target.value), filters.priceRange?.[1] || priceRange[1])}
+                            max={maxProductPrice}
+                            value={currentMinPrice}
+                            onChange={handleMinPriceChange}
                             style={{ flex: 1 }}
                         />
+                        <span className="mx-2">-</span>
                         <input
                             type="range"
                             className="form-range"
                             min="0"
-                            max={priceRange[1]}
-                            value={filters.priceRange?.[1] || priceRange[1]}
-                            onChange={(e) => handlePriceChange(filters.priceRange?.[0] || 0, parseInt(e.target.value))}
+                            max={maxProductPrice}
+                            value={currentMaxPrice}
+                            onChange={handleMaxPriceChange}
                             style={{ flex: 1 }}
                         />
                     </div>
-                    <div className="d-flex justify-content-between">
-                        <small>${filters.priceRange?.[0] || 0}</small>
-                        <small>${filters.priceRange?.[1] || priceRange[1]}</small>
+                    <div className="d-flex justify-content-between mt-2">
+                        <small>${currentMinPrice}</small>
+                        <small>${currentMaxPrice}</small>
                     </div>
                 </div>
 
                 <div className="mb-3">
                     <label className="form-label">Categoría</label>
                     <div className="btn-group-vertical w-100" role="group">
+                        <button
+                            type="button"
+                            className={`btn btn-sm ${!filters.category ? 'btn-primary' : 'btn-outline-primary'} text-start`}
+                            onClick={() => setFilters(prev => ({ ...prev, category: null }))}
+                        >
+                            Todas las categorías
+                        </button>
                         {categories.map(category => (
                             <button
                                 key={category}
@@ -145,6 +182,13 @@ export default function ProductFilters() {
                 <div className="mb-3">
                     <label className="form-label">Rating mínimo</label>
                     <div className="btn-group w-100" role="group">
+                        <button
+                            type="button"
+                            className={`btn btn-sm ${!filters.minRating ? 'btn-warning' : 'btn-outline-warning'}`}
+                            onClick={() => setFilters(prev => ({ ...prev, minRating: null }))}
+                        >
+                            Todos
+                        </button>
                         {[1, 2, 3, 4, 5].map(rating => (
                             <button
                                 key={rating}
@@ -160,7 +204,7 @@ export default function ProductFilters() {
 
                 <div className="text-center">
                     <small className="text-muted">
-                        {filters.category || filters.brand || filters.minRating || (filters.priceRange && (filters.priceRange[0] > 0 || filters.priceRange[1] < priceRange[1]))
+                        {filters.category || filters.brand || filters.minRating || (filters.priceRange && (filters.priceRange[0] > 0 || filters.priceRange[1] < maxProductPrice))
                             ? 'Filtros aplicados'
                             : 'Todos los productos'}
                     </small>

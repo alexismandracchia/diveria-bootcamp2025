@@ -33,7 +33,7 @@ export default function LoginForm () {
     }
     try {
       setLoading(true);
-      await loginUser(email, password);   // setState OK: se ejecuta por evento (submit)
+      await loginUser(email, password);
       navigate(from, { replace: true });
     } catch (err) {
       setError(err.message || 'Error al iniciar sesión');

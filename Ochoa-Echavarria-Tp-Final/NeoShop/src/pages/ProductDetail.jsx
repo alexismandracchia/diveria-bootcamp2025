@@ -3,7 +3,7 @@ import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useApp } from '../context/AppContext'
 import '../assets/styles.css'
 
-const PLACEHOLDER = 'https://via.placeholder.com/800x500/6c757d/ffffff?text=Imagen+no+disponible'
+const PLACEHOLDER = 'https://img.freepik.com/vector-premium/ilustracion-vectorial-iconos-imagenes-foto-fondo-aislado-concepto-letrero-galeria_993513-11.jpg'
 
 export default function ProductDetail() {
   const { id } = useParams()
@@ -43,7 +43,6 @@ export default function ProductDetail() {
     setImageError(true)
   }
 
-  // Función para obtener el valor numérico del rating
   const getRatingValue = () => {
     if (!data || !data.rating) return 0;
 
@@ -56,7 +55,6 @@ export default function ProductDetail() {
     return data.rating;
   }
 
-  // Función para obtener el número de reviews
   const getReviewsCount = () => {
     if (!data) return 0;
 
@@ -124,7 +122,6 @@ export default function ProductDetail() {
 
         <div className="product-detail-card">
           <div className="row g-5">
-            {/* Columna de imágenes */}
             <div className="col-12 col-lg-6">
               <div className="product-gallery">
                 <div className="main-image-container">
@@ -165,7 +162,6 @@ export default function ProductDetail() {
               </div>
             </div>
 
-            {/* Columna de información */}
             <div className="col-12 col-lg-6">
               <div className="product-info">
                 {localOnly && (

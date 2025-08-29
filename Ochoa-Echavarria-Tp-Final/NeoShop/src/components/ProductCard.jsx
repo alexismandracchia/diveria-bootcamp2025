@@ -18,7 +18,7 @@ function ProductCard({ product }) {
   }
 
   const cardImage = imageError
-    ? 'https://via.placeholder.com/300x180/6c757d/ffffff?text=Imagen+no+disponible'
+    ? 'https://img.freepik.com/vector-premium/ilustracion-vectorial-iconos-imagenes-foto-fondo-aislado-concepto-letrero-galeria_993513-11.jpg'
     : product.thumbnail
 
   return (

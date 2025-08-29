@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 const API = 'https://dummyjson.com'
 
 export default function useAppState() {
-  // --- Auth ---
+  //Auth
   const [isAuthenticated, setIsAuthenticated] = useState(() => {
     try { return JSON.parse(localStorage.getItem('auth')) || false } catch { return false }
   })
@@ -11,10 +11,10 @@ export default function useAppState() {
     try { return JSON.parse(localStorage.getItem('user')) || null } catch { return null }
   })
 
-  // --- Estado de productos/UI ---
-  const [items, setItems] = useState([]) // ← Datos COMPLETOS de API
-  const [filteredItems, setFilteredItems] = useState([]) // ← Datos FILTRADOS para UI
-  const [total, setTotal] = useState(0) // ← Total de la API (sin filtros)
+  // Estados
+  const [items, setItems] = useState([]) 
+  const [filteredItems, setFilteredItems] = useState([]) 
+  const [total, setTotal] = useState(0)
   const [page, setPage] = useState(1)
   const [limit, setLimit] = useState(12)
   const [query, setQuery] = useState('')
@@ -32,13 +32,11 @@ export default function useAppState() {
 
   const abortRef = useRef(null)
 
-  // Persistencia auth
   useEffect(() => {
     localStorage.setItem('auth', JSON.stringify(isAuthenticated))
     localStorage.setItem('user', JSON.stringify(user))
   }, [isAuthenticated, user])
 
-  // Cargar productos desde localStorage al inicializar
   useEffect(() => {
     const loadProducts = () => {
       try {
@@ -62,7 +60,6 @@ export default function useAppState() {
     loadProducts()
   }, [])
 
-  // Guardar en localStorage cuando cambien los productos
   useEffect(() => {
     if (items.length > 0 && useLocalData) {
       localStorage.setItem('products', JSON.stringify(items))
@@ -70,7 +67,6 @@ export default function useAppState() {
     }
   }, [items, total, useLocalData])
 
-  // Auth
   const DEMO = { email: 'admin@bootcamp.com', password: 'password', name: 'User' }
 
   const loginUser = useCallback(async (email, password) => {
@@ -109,6 +105,7 @@ export default function useAppState() {
     setLoading(true)
     setError(null)
 
+    // Cancelar fetch previo si existe
     if (abortRef.current) {
       abortRef.current.abort()
     }
@@ -139,16 +136,15 @@ export default function useAppState() {
     }
   }, [page, limit, query, skipNextFetch, useLocalData])
 
-  // seEffect para fetch automático
   useEffect(() => {
     fetchItems()
   }, [page, limit, query, fetchItems])
 
-  // Setters mejorados para paginación
+
   const changePage = useCallback((newPage) => {
     setPage(newPage)
     setSkipNextFetch(false)
-    // Al cambiar página, forzar modo API (no local)
+
     setUseLocalData(false)
   }, [])
 
@@ -163,18 +159,16 @@ export default function useAppState() {
     setQuery(newQuery)
     setPage(1)
     setSkipNextFetch(false)
-    setUseLocalData(false) // Forzar modo API
+    setUseLocalData(false)
   }, [])
 
   const fetchProductById = useCallback(async (id) => {
     setLoading(true)
     setError(null)
     try {
-      // Siempre intentar obtener de la API primero para datos completos
       const apiProduct = await fetchJson(`${API}/products/${Number(id)}`)
       return apiProduct
     } catch (apiError) {
-      // Si falla la API, buscar en items locales
       const localItem = items.find(item => item.id === Number(id))
       if (localItem) return localItem
       throw apiError
@@ -184,19 +178,17 @@ export default function useAppState() {
   }, [items])
 
   const addItem = useCallback(async (newItem) => {
-    // Crear un nuevo producto
     const created = {
       ...newItem,
       id: -Date.now(),
       isLocal: true
     }
 
-    // Actualizar estado local
     setItems(prev => [created, ...prev])
     setFilteredItems(prev => [created, ...prev])
     setTotal(t => t + 1)
     setUseLocalData(true)
-    setSkipNextFetch(true) // Evitar fetch automático
+    setSkipNextFetch(true)
 
     return created
   }, [])
@@ -204,7 +196,6 @@ export default function useAppState() {
   const updateItem = useCallback(async (id, updatedData) => {
     const targetId = Number(id)
 
-    // Actualizar en estado local
     setItems(prev => prev.map(p =>
       Number(p.id) === targetId
         ? { ...p, ...updatedData, isModified: true }
@@ -224,7 +215,6 @@ export default function useAppState() {
   const deleteItem = useCallback(async (id) => {
     const targetId = Number(id)
 
-    // Eliminación del estado local
     setItems(prev => prev.filter(p => Number(p.id) !== targetId))
     setFilteredItems(prev => prev.filter(p => Number(p.id) !== targetId))
     setTotal(t => Math.max(0, t - 1))
@@ -232,7 +222,6 @@ export default function useAppState() {
     setSkipNextFetch(true)
   }, [])
 
-  // Función para resetear y volver a cargar desde la API
   const resetToAPIData = useCallback(() => {
     localStorage.removeItem('products')
     localStorage.removeItem('productsTotal')
@@ -244,15 +233,12 @@ export default function useAppState() {
     fetchItems()
   }, [fetchItems])
 
-  // Función para aplicar filtros
   const applyFilters = useCallback((products, filters, searchQuery) => {
     let filtered = [...products];
 
-    // Filtro por texto de búsqueda
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       filtered = filtered.filter(product => {
-        // Verificar y convertir cada campo a string antes de usar toLowerCase()
         const title = product.title ? product.title.toString().toLowerCase() : '';
         const description = product.description ? product.description.toString().toLowerCase() : '';
         const category = product.category ? product.category.toString().toLowerCase() : '';
@@ -266,8 +252,6 @@ export default function useAppState() {
         );
       });
     }
-
-    // Filtros (con verificación de null/undefined)
 
     if (filters.category) {
       filtered = filtered.filter(product =>
@@ -299,16 +283,12 @@ export default function useAppState() {
     return filtered;
   }, []);
 
-  // Para aplicar filtros cuando cambian
   useEffect(() => {
     if (items.length > 0) {
       if (useLocalData || query || Object.values(filters).some(val => val !== null)) {
-        // Aplicar filtros solo en modo local o cuando hay búsqueda/filtros activos
         const filtered = applyFilters(items, filters, query);
         setFilteredItems(filtered);
-        // Mantener el total original para paginación
       } else {
-        // En modo API sin filtros, usar items directamente
         setFilteredItems(items);
       }
     }
