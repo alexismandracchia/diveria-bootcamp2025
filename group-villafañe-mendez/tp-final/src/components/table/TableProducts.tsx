@@ -1,20 +1,8 @@
 "use client";
 import React from "react";
-import ProductTableRow, { ProductRow } from "./components/ProductTableRow";
+import ProductTableRow from "./components/ProductTableRow";
 import ProductTablePagination from "../pagination/Pagination";
-import { Product } from "@/services/ProductServices";
-
-export type { ProductRow };
-
-export interface TableProductsProps {
-  products: (Product | ProductRow)[];
-  total?: number;
-  page?: number;
-  pageSize?: number;
-  onPageChange?: (newPage: number) => void;
-  onEdit?: (product: ProductRow) => void;
-  onRemove?: (product: ProductRow) => void;
-}
+import { TableProductsProps } from "@/types/productTypes";
 
 const TableProducts: React.FC<TableProductsProps> = ({
   products,
@@ -44,7 +32,7 @@ const TableProducts: React.FC<TableProductsProps> = ({
           <tbody>
             {products.map((product) => (
               <ProductTableRow
-                key={product.id}
+                key={`product-${product.id}`}
                 product={product}
                 onEdit={() => onEdit?.(product)}
                 onRemove={() => onRemove?.(product)}

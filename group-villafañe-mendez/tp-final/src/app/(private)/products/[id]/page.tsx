@@ -2,12 +2,13 @@
 
 import { useEffect, useState, use } from "react";
 import Image from "next/image";
-import { ProductDetail, ProductService } from "@/services/ProductServices";
+import { ProductService } from "@/services/ProductServices";
 import axiosInstance from "@/api/AxiosInstance";
 import { ShadowButton } from "@/components/buttons/Buttons";
 import FullScreenLoader from "@/components/loaders/FullScreenLoader";
 import FullScreenError from "@/components/error/FullScreenErrors";
 import { useRouter } from "next/navigation";
+import { ProductDetail } from "@/types/productTypes";
 
 const productService = new ProductService(axiosInstance);
 

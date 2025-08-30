@@ -11,21 +11,17 @@ interface ToastContextProps {
 const ToastContext = createContext<ToastContextProps | undefined>(undefined);
 
 export const ToastProvider = ({ children }: { children: ReactNode }) => {
-  const [toast, setToast] = useState<string | null>(null);
-  const [visible, setVisible] = useState(false);
-  const [type, setType] = useState<ToastType>("error");
+  // Solo guardamos el mensaje y tipo
+  const [toast, setToast] = useState<{ message: string; type: ToastType } | null>(null);
 
-  const showToast = (message: string, toastType: ToastType = "error") => {
-    setToast(message);
-    setType(toastType);
-    setVisible(true);
-    setTimeout(() => setVisible(false), 5000);
+  const showToast = (message: string, type: ToastType = "error") => {
+    setToast({ message, type });
   };
 
   return (
     <ToastContext.Provider value={{ showToast }}>
       {children}
-      <Toasts message={toast} visible={visible} type={type} />
+      <Toasts message={toast?.message || null} type={toast?.type} />
     </ToastContext.Provider>
   );
 };

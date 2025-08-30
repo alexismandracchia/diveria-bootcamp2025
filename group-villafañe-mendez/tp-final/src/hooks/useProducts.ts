@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
-import { ProductService, Product } from "@/services/ProductServices";
+import { ProductService } from "@/services/ProductServices";
 import axiosInstance from "@/api/AxiosInstance";
-import { ProductRow } from "@/components/table/TableProducts";
+import type { Product, ProductRow } from "@/types/productTypes";
 
 const productService = new ProductService(axiosInstance);
 const PAGE_SIZE = 10; 

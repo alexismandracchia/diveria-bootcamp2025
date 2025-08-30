@@ -1,55 +1,6 @@
 import { BaseService } from "./BaseService";
 import { PATH } from "@/lib/common";
-
-export interface Product {
-  id: number; 
-  title: string;
-  description: string;
-  price: number; 
-  category?: string;           /* <-- dejo "?" provisional  */
-  stock: number;              /* <-- dejo "?" provisional  */
-  availabilityStatus?: string; /* <-- dejo "?" provisional  */
-  images?: string[];
-}
-
-export interface ProductDetail extends Product {
-  discountPercentage: number;
-  rating: number;
-  tags: string[];
-  brand: string;
-  sku: string;
-  weight: number;
-  dimensions: {
-    width: number;
-    height: number;
-    depth: number;
-  };
-  warrantyInformation: string;
-  shippingInformation: string;
-  reviews: {
-    rating: number;
-    comment: string;
-    date: string;
-    reviewerName: string;
-    reviewerEmail: string;
-  }[];
-  returnPolicy: string;
-  minimumOrderQuantity: number;
-  meta: {
-    createdAt: string;
-    updatedAt: string;
-    barcode: string;
-    qrCode: string;
-  };
-  thumbnail: string;
-}
-
-export interface ApiPagination<T> {
-  products: T[];
-  total: number;
-  skip: number;
-  limit: number;
-}
+import { Product, ProductDetail, ApiPagination } from "@/types/productTypes";
 
 export class ProductService extends BaseService {
   async getProducts(skip = 0, limit = 30): Promise<ApiPagination<Product>> {
