@@ -1,9 +1,9 @@
 import Modal from "@/components/modal/Modal";
-import { Product } from "@/services/ProductServices";
 import React, { useState, useEffect, useMemo } from "react";
 import { ProductFormErrors, validateProductForm } from "@/lib/validators";
 import { ShadowButton } from "../buttons/Buttons";
 import { TextInput } from "../inputs/TextField";
+import { Product } from "@/types/productTypes";
 
 interface ProductFormModalProps {
   isOpen: boolean;
@@ -55,11 +55,12 @@ const ProductFormModal: React.FC<ProductFormModalProps> = ({
     }));
   };
 
-  const isValid = useMemo(() => {
-    const validationErrors = validateProductForm(formData);
+  const validationErrors = useMemo(() => validateProductForm(formData), [formData]);
+  const isValid = !validationErrors;
+  
+  useEffect(() => {
     setErrors(validationErrors || {});
-    return !validationErrors;
-  }, [formData]);
+  }, [validationErrors]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();

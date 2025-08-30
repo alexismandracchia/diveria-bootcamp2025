@@ -1,17 +1,16 @@
 "use client";
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { FaPlus } from "react-icons/fa6";
-
 import { ShadowButton } from "@/components/buttons/Buttons";
-import TableProducts, { ProductRow } from "@/components/table/TableProducts";
+import TableProducts from "@/components/table/TableProducts";
 import FullScreenLoader from "@/components/loaders/FullScreenLoader";
 import FullScreenError from "@/components/error/FullScreenErrors";
 import DeleteProductModal from "@/components/modal/DeleteProductModal";
 import ProductFormModal from "@/components/modal/ProductFormModal";
-import { Product } from "@/services/ProductServices";
-
-import { useProductContext } from "./ProductContext";
+import type { Product, ProductRow } from "@/types/productTypes";
+import { useLocalProducts } from "../../../../hooks/useLocalProducts";
+import { useProductContext } from "../../../../context/ProductContext";
 
 const ModalType = {
   CREATE: "CREATE",
@@ -30,7 +29,13 @@ export default function ProductManagement() {
     type: null,
     product: null,
   });
-  const [addProducts, setAddProducts] = useState<ProductRow[]>([]);
+
+  const {
+    localProducts,
+    addLocalProduct,
+    updateLocalProduct,
+    removeLocalProduct,
+  } = useLocalProducts();
 
   const {
     products,
@@ -40,9 +45,8 @@ export default function ProductManagement() {
     loading,
     error,
     setPageNumber,
-    refetch,
     createProduct,
-    updateProduct,
+    updateProduct, 
     deleteProduct,
   } = useProductContext();
 
@@ -57,26 +61,28 @@ export default function ProductManagement() {
     setModal({ type: null, product: null });
   };
 
+  const combinedProducts = useMemo(() => [...products, ...localProducts], [products, localProducts]);
+
+
   const handleFormSubmit = async (
     data: Omit<Product, "id"> | Partial<Product>
   ) => {
     try {
       if (modal.type === ModalType.CREATE) {
         const response = await createProduct(data as Omit<Product, "id">);
-
         const newRow: ProductRow = {
           id: response.id,
           title: response.title,
           price: response.price,
           stock: response.stock,
           status: "In Stock",
+          thumbnail: "https://cdn.dummyjson.com/product-images/groceries/ice-cream/1.webp"
         };
-
-        setAddProducts((prev) => [...prev, newRow]);
+        addLocalProduct(newRow);
       } else if (modal.type === ModalType.EDIT && modal.product) {
-        await updateProduct(modal.product.id, data);
+        await updateProduct(modal.product.id, data); 
+        updateLocalProduct(modal.product.id, data as Partial<ProductRow>);
       }
-      //refetch();
     } catch (e) {
       console.error("Failed to submit form:", e);
     } finally {
@@ -87,8 +93,8 @@ export default function ProductManagement() {
   const handleDeleteConfirm = async () => {
     if (modal.product) {
       try {
-        await deleteProduct(modal.product.id);
-        refetch();
+        await deleteProduct(modal.product.id); 
+        removeLocalProduct(modal.product.id); 
       } catch (e) {
         console.error("Failed to delete product:", e);
       } finally {
@@ -105,7 +111,7 @@ export default function ProductManagement() {
         onRetry={() => router.refresh()}
       />
     );
-  }
+  };
 
   return (
     <>
@@ -124,8 +130,8 @@ export default function ProductManagement() {
           </ShadowButton>
         </div>
         <TableProducts
-          products={[...products, ...addProducts]}
-          total={total + addProducts.length}
+          products={combinedProducts}
+          total={total + localProducts.length}
           page={pageNumber}
           pageSize={pageSize}
           onPageChange={setPageNumber}

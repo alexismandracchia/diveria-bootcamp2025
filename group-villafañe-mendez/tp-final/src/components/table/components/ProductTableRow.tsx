@@ -5,21 +5,7 @@ import { GradientButton } from "../../buttons/Buttons";
 import { MdDelete } from "react-icons/md";
 import { FaEdit } from "react-icons/fa";
 import Link from "next/link";
-
-export interface ProductRow {
-  id: number;
-  title: string;
-  price: number;
-  stock?: number;
-  status?: string;
-  thumbnail?: string;
-}
-
-interface ProductTableRowProps {
-  product: ProductRow;
-  onEdit?: () => void;
-  onRemove?: () => void;
-}
+import type { ProductTableRowProps } from "@/types/productTypes";
 
 const getBadgeProps = (status?: string): BadgeProps => {
   switch (status) {
