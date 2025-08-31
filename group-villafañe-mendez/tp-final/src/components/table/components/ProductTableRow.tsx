@@ -29,11 +29,11 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
     <tr className="transition-colors hover:bg-white/5">
       <td className="p-3 sm:p-4 align-middle">
   {product.thumbnail && (
-    <div className="w-[12vw] h-[12vh] overflow-hidden rounded-xl ring-1 ring-white/10 flex items-center justify-center">
+    <div className="w-[15vw] h-[15vh] overflow-hidden rounded-xl ring-1 ring-white/10 flex items-center justify-center">
       <img
         src={product.thumbnail}
         alt={product.title}
-        className="object-contain w-full h-full"
+        className="object-contain w-full h-full w-[15vw] h-[15vh]"
       />
     </div>
   )}
@@ -43,18 +43,18 @@ const ProductTableRow: React.FC<ProductTableRowProps> = ({
       <td className="px-4 py-3 sm:px-6 sm:py-4 align-middle">
         <Link
           href={`/products/${product.id}`}
-          className="text-strong hover:underline underline-offset-4"
+          className="text-strong text-base hover:underline underline-offset-4"
         >
           {product.title}
         </Link>
       </td>
 
       <td className="px-4 py-3 sm:px-6 sm:py-4 align-middle">
-        <span className="text-soft">${product.price}</span>
+        <span className="text-soft text-base">${product.price}</span>
       </td>
 
       <td className="px-4 py-3 sm:px-6 sm:py-4 align-middle">
-        <span className="text-soft">{product.stock}</span>
+        <span className="text-soft text-base">{product.stock}</span>
       </td>
 
       <td className="px-4 py-3 sm:px-6 sm:py-4 align-middle">

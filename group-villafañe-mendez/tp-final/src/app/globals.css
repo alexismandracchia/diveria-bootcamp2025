@@ -39,6 +39,10 @@ body {
   border-radius: 1rem;
 }
 
+.glass-card {
+  overflow: visible;
+}
+
 .glass-button {
   background: rgba(255, 255, 255, 0.06);
   -webkit-backdrop-filter: blur(12px);
@@ -77,20 +81,67 @@ body {
   border: 1px solid rgba(255,255,255,0.10);
 }
 
-/* Superficies dark (evitar negro puro) */
 .surface-0 { background: #0d1117; }  
 .surface-1 { background: #0f141b; }  
 .surface-2 { background: #131a23; }  
 
-/* Texto en dark */
 .text-strong { color: rgba(255,255,255,0.95); }
 .text-soft   { color: rgba(255,255,255,0.80); }
 .text-dim    { color: rgba(255,255,255,0.60); }
 
-/* Focus accesible (2px) */
+
 :where(button, a, [role="button"], input, select, textarea):focus-visible {
   outline: none;
   box-shadow: 0 0 0 2px rgba(34, 211, 238, 0.6);
 }
 
+
+.no-spin::-webkit-outer-spin-button,
+.no-spin::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+
+
+
+.scrollbar-thin {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255,255,255,0.25) transparent;
+}
+.scrollbar-thin::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.25);
+  border-radius: 6px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+
+.text-dim { color: rgba(255,255,255,0.6); }
+.text-strong { color: rgba(255,255,255,0.92); }
+.bg-surface-100 { background-color: rgba(20,20,22,0.85); }
+.bg-surface-200 { background-color: rgba(32,32,36,0.85); }
+
+
+.glass {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+
+
+[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+}
+
+
+[role="listbox"] button:focus-visible {
+  outline: 2px solid rgba(34, 211, 238, 0.35); /* cyan-400/35 */
+  outline-offset: 2px;
+}
 

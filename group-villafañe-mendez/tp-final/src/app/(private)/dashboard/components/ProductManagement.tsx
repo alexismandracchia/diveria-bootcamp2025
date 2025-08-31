@@ -16,6 +16,12 @@ import type { Product, ProductRow } from "@/types/productTypes";
 import { useLocalProducts } from "../../../../hooks/useLocalProducts";
 import { useProductContext } from "../../../../context/ProductContext";
 
+
+import { useProductSearchPool } from "@/hooks/useProductSearchPool";
+import { useSearchFilters } from "@/hooks/useSearchFilters";
+import SearchFilterBar from "@/components/filters/SearchFilterBar";
+import LiveResultsAnnouncer from "@/components/filters/LiveResultAnnouncer";
+
 const ModalType = {
   CREATE: "CREATE",
   EDIT: "EDIT",
@@ -82,7 +88,13 @@ export default function ProductManagement() {
           title: response.title,
           price: response.price,
           stock: response.stock,
-          status: "In Stock",
+          status:
+            response.stock > 10
+              ? "In Stock"
+              : response.stock > 0
+              ? "Low Stock"
+              : "Out of Stock",
+          // Podés cambiar el thumbnail default si querés
           thumbnail:
             "https://cdn.dummyjson.com/product-images/groceries/ice-cream/1.webp",
         };
@@ -111,6 +123,23 @@ export default function ProductManagement() {
     }
   };
 
+  const { allProducts, allLoading } = useProductSearchPool(100);
+
+ 
+  const {
+    filters,
+    setFilters,
+    clearFilters,
+    searchPage,
+    setSearchPage,
+    active: hasActiveFilters,
+    filteredRows,
+    pagedFiltered,
+    categoryOptions: categories,
+    priceBounds,
+  } = useSearchFilters(allProducts, localProducts, pageSize ?? 10);
+
+
   if (loading) return <FullScreenLoader message="Loading Products..." />;
   if (error) {
     return (
@@ -123,7 +152,7 @@ export default function ProductManagement() {
 
   return (
     <main className="min-h-dvh surface-0 text-strong">
-      <div className="mx-auto max-w-7xl px-6 pt-20 pb-6">
+      <div className="mx-auto max-w-[85vw] px-6 pt-20 pb-6">
         {/* Header */}
         <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
           <div>
@@ -142,14 +171,28 @@ export default function ProductManagement() {
           </GlassButton>
         </div>
 
-        
+        {/* A11y: anunciar cantidad de resultados cuando hay filtros */}
+        <LiveResultsAnnouncer count={filteredRows.length} active={hasActiveFilters} />
+
+        {/* Search & Filters (dark glass, sin tocar context) */}
+        <div className="mb-6">
+          <SearchFilterBar
+            value={filters}
+            onChange={setFilters}
+            onClear={clearFilters}
+            categoryOptions={categories}
+            globalMinPrice={priceBounds.min}
+            globalMaxPrice={priceBounds.max}
+          />
+        </div>
+
         <GlassCard className="p-0 overflow-hidden">
           <TableProducts
-            products={combinedProducts}
-            total={total + localProducts.length}
-            page={pageNumber}
+            products={hasActiveFilters ? pagedFiltered : combinedProducts}
+            total={hasActiveFilters ? filteredRows.length : total + localProducts.length}
+            page={hasActiveFilters ? searchPage : pageNumber}
             pageSize={pageSize}
-            onPageChange={setPageNumber}
+            onPageChange={hasActiveFilters ? setSearchPage : setPageNumber}
             onEdit={(product) => handleOpenModal(ModalType.EDIT, product)}
             onRemove={(product) => handleOpenModal(ModalType.DELETE, product)}
           />
