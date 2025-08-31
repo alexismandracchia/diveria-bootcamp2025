@@ -2,12 +2,16 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { FaPlus } from "react-icons/fa6";
-import { ShadowButton } from "@/components/buttons/Buttons";
+
+import GlassButton from "@/app/(private)/dashboard/components/GlassButton";
+import GlassCard from "@/app/(private)/dashboard/components/GlassCard";
+
 import TableProducts from "@/components/table/TableProducts";
 import FullScreenLoader from "@/components/loaders/FullScreenLoader";
 import FullScreenError from "@/components/error/FullScreenErrors";
 import DeleteProductModal from "@/components/modal/DeleteProductModal";
 import ProductFormModal from "@/components/modal/ProductFormModal";
+
 import type { Product, ProductRow } from "@/types/productTypes";
 import { useLocalProducts } from "../../../../hooks/useLocalProducts";
 import { useProductContext } from "../../../../context/ProductContext";
@@ -25,6 +29,7 @@ type ModalStateType = {
 
 export default function ProductManagement() {
   const router = useRouter();
+
   const [modal, setModal] = useState<ModalStateType>({
     type: null,
     product: null,
@@ -46,7 +51,7 @@ export default function ProductManagement() {
     error,
     setPageNumber,
     createProduct,
-    updateProduct, 
+    updateProduct,
     deleteProduct,
   } = useProductContext();
 
@@ -61,8 +66,10 @@ export default function ProductManagement() {
     setModal({ type: null, product: null });
   };
 
-  const combinedProducts = useMemo(() => [...products, ...localProducts], [products, localProducts]);
-
+  const combinedProducts = useMemo(
+    () => [...products, ...localProducts],
+    [products, localProducts]
+  );
 
   const handleFormSubmit = async (
     data: Omit<Product, "id"> | Partial<Product>
@@ -76,11 +83,12 @@ export default function ProductManagement() {
           price: response.price,
           stock: response.stock,
           status: "In Stock",
-          thumbnail: "https://cdn.dummyjson.com/product-images/groceries/ice-cream/1.webp"
+          thumbnail:
+            "https://cdn.dummyjson.com/product-images/groceries/ice-cream/1.webp",
         };
         addLocalProduct(newRow);
       } else if (modal.type === ModalType.EDIT && modal.product) {
-        await updateProduct(modal.product.id, data); 
+        await updateProduct(modal.product.id, data);
         updateLocalProduct(modal.product.id, data as Partial<ProductRow>);
       }
     } catch (e) {
@@ -93,8 +101,8 @@ export default function ProductManagement() {
   const handleDeleteConfirm = async () => {
     if (modal.product) {
       try {
-        await deleteProduct(modal.product.id); 
-        removeLocalProduct(modal.product.id); 
+        await deleteProduct(modal.product.id);
+        removeLocalProduct(modal.product.id);
       } catch (e) {
         console.error("Failed to delete product:", e);
       } finally {
@@ -111,34 +119,43 @@ export default function ProductManagement() {
         onRetry={() => router.refresh()}
       />
     );
-  };
+  }
 
   return (
-    <>
-      <div className="max-w-7xl mx-auto px-6 pt-20 pb-5">
-        <div className="flex justify-between  items-center py-0 mb-4">
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <ShadowButton
-            className="p-2"
-            colorFrom="from-green-500"
-            colorVia="via-green-600"
-            colorTo="to-green-700"
-            onClick={() => handleOpenModal(ModalType.CREATE)}
-          >
-            <FaPlus />
-            Add Product
-          </ShadowButton>
-        </div>
-        <TableProducts
-          products={combinedProducts}
-          total={total + localProducts.length}
-          page={pageNumber}
-          pageSize={pageSize}
-          onPageChange={setPageNumber}
-          onEdit={(product) => handleOpenModal(ModalType.EDIT, product)}
-          onRemove={(product) => handleOpenModal(ModalType.DELETE, product)}
-        />
+    <main className="min-h-dvh surface-0 text-strong">
+      <div className="mx-auto max-w-7xl px-6 pt-20 pb-6">
+        {/* Header */}
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <h1 className="text-2xl font-semibold tracking-tight">Dashboard</h1>
+            <p className="text-dim mt-1">Administrá tu catálogo</p>
+          </div>
 
+          {/* Botón Add Product (glass) */}
+          <GlassButton
+            onClick={() => handleOpenModal(ModalType.CREATE)}
+            ariaLabel="Agregar producto"
+            className="inline-flex items-center gap-2"
+          >
+            <FaPlus className="h-4 w-4" />
+            Add Product
+          </GlassButton>
+        </div>
+
+        
+        <GlassCard className="p-0 overflow-hidden">
+          <TableProducts
+            products={combinedProducts}
+            total={total + localProducts.length}
+            page={pageNumber}
+            pageSize={pageSize}
+            onPageChange={setPageNumber}
+            onEdit={(product) => handleOpenModal(ModalType.EDIT, product)}
+            onRemove={(product) => handleOpenModal(ModalType.DELETE, product)}
+          />
+        </GlassCard>
+
+        {/* Modales */}
         <DeleteProductModal
           isOpen={modal.type === ModalType.DELETE}
           onClose={handleCloseModal}
@@ -163,6 +180,6 @@ export default function ProductManagement() {
           }
         />
       </div>
-    </>
+    </main>
   );
 }

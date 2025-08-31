@@ -19,8 +19,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="es" suppressHydrationWarning>
-      <body className={roboto.className}>
-        <AuthProvider>
+<body className={`${roboto.className} surface-0 text-strong antialiased`}>        
+  <AuthProvider>
           <Navbar />
           <ToastProvider>
             {children}
