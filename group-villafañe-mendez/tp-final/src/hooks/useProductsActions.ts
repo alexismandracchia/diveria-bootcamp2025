@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
-import { Product, ProductService } from "@/services/ProductServices";
+import { ProductService } from "@/services/ProductServices";
 import { useToast } from "@/context/ToastContext";
+import type { Product } from "@/types/productTypes";
 
 export const useProductActions = (productService: ProductService) => {
   const [loadingAction, setLoadingAction] = useState(false);

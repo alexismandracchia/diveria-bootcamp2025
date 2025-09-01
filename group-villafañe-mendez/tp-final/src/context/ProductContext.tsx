@@ -1,10 +1,10 @@
 "use client";
 import { createContext, useContext, ReactNode, FC } from "react";
-import { Product, ProductService } from "@/services/ProductServices";
+import { ProductService } from "@/services/ProductServices";
 import axiosInstance from "@/api/AxiosInstance";
-import { useProducts } from "@/app/(private)/dashboard/useProducts";
-import { useProductActions } from "../useProductsActions"; 
-import { ProductRow } from "@/components/table/TableProducts";
+import { useProducts } from "@/hooks/useProducts";
+import { useProductActions } from "../hooks/useProductsActions"; 
+import { Product , ProductRow } from "@/types/productTypes";
 
 const productService = new ProductService(axiosInstance);
 

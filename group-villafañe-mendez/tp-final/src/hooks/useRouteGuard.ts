@@ -10,7 +10,6 @@ type RouteType = "auth" | "private";
 export function useRouteGuard(type: RouteType) {
   const { isAuthenticated, isAuthLoading } = useAuth();
   const router = useRouter();
-  const pathname = usePathname();
 
   useEffect(() => {
     if (isAuthLoading) {
@@ -25,7 +24,7 @@ export function useRouteGuard(type: RouteType) {
       router.push(PATH.DASHBOARD);
     }
     
-  }, [isAuthenticated, type, router, pathname]);
+  }, [isAuthenticated, type, router]);
 
   return { isAuthenticated, isAuthLoading };
 }
